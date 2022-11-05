@@ -1,0 +1,247 @@
+<html lang="zh-CN">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script src="https://unpkg.zhimg.com/axios@1.0.0/dist/axios.min.js"></script>
+  <head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+	<meta name="generator">
+	<title>online disk</title>
+	<style>
+	* {
+		margin:0;
+		padding:0;
+		box-sizing:border-box;
+		-webkit-box-sizing:border-box;
+		-moz-box-sizing:border-box;
+		-webkit-font-smoothing:antialiased;
+		-moz-font-smoothing:antialiased;
+		-o-font-smoothing:antialiased;
+		font-smoothing:antialiased;
+		text-rendering:optimizeLegibility;
+		font-family:Microsoft Yahei, "Open Sans", Helvetica, Arial, sans-serif;
+	}
+
+	body {
+		font-family:Microsoft Yahei, "Open Sans", Helvetica, Arial, sans-serif;
+		font-weight:300;
+		font-size: 12px;
+		line-height:30px;
+		color:#777;
+		background:#F6CECE;
+	}
+
+	.container {
+		max-width:400px;
+		width:100%;
+		margin:0 auto;
+		position:relative;
+	}
+	#contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea, #contact button[type="button"], #contact button[type="button"] { font:400 12px/16px Microsoft Yahei,"Open Sans", Helvetica, Arial, sans-serif; }
+
+	#contact {
+		background:#F9F9F9;
+		padding:25px;
+		margin:5px 0;
+	}
+
+	#contact1 {
+		background:#F9F9F9;
+		padding:25px;
+		margin:0px 0;
+	}
+
+	#div {
+		background:#F9F9F9;
+		padding:0px;
+		margin:10px 0;
+	}
+
+	#contact h3 {
+		color: #F96;
+		display: block;
+		font-size: 20px;
+		font-weight: 400;
+	}
+
+	#contact h4 {
+		margin:5px 0 15px;
+		display:block;
+		font-size:13px;
+	}
+
+	fieldset {
+		border: medium none !important;
+		margin: 0 0 10px;
+		min-width: 100%;
+		padding: 0;
+		width: 100%;
+	}
+
+	#contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea {
+		width:100%;
+		border:1px solid #CCC;
+		background:#FFF;
+		margin:0 0 5px;
+		padding:10px;
+	}
+
+	#contact input[type="text"]:hover, #contact input[type="email"]:hover, #contact input[type="tel"]:hover, #contact input[type="url"]:hover, #contact textarea:hover {
+		-webkit-transition:border-color 0.3s ease-in-out;
+		-moz-transition:border-color 0.3s ease-in-out;
+		transition:border-color 0.3s ease-in-out;
+		border:1px solid #AAA;
+	}
+
+	#contact button[type="button"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#ffb3b3;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+
+	#contact button[id="button"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#ffff66;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+
+	#contact button[id="delete"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#ff6666;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+	#contact button[id="logout"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#D0FA58;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+	#contact button[id="update"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#FAAC58;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+	#contact button[id="back"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#00FF80;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+	#contact button[id="move"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#58FAF4;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+	#contact button[id="link"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#99ff33;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+
+	#contact input[type="file"] {
+		cursor:pointer;
+		width:100%;
+		border:none;
+		background:#66ff33;
+		color:#000;
+		margin:0 0 5px;
+		padding:10px;
+		font-size:15px;
+	}
+
+	#contact a {
+		outline:0;
+		/*border:1px solid #999;*/
+		color:#642EFE;
+		text-align: center;
+		font-size: 1.6em;
+		line-height:1.3em;
+	}
+
+	#contact button[type="button"]:hover {
+		background:#09C;
+		-webkit-transition:background 0.3s ease-in-out;
+		-moz-transition:background 0.3s ease-in-out;
+		transition:background-color 0.3s ease-in-out;
+	}
+
+	#contact button[type="button"]:active { box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.5); }
+
+	#contact input:focus, #contact textarea:focus {
+		outline:0;
+		border:1px solid #999;
+	}
+	</style>
+  </head>
+  <body>
+	<div class="container">
+		<div id="contact">
+			<h4 class="glyphicon glyphicon-floppy-disk" >点击按钮选择文件</h4><input type="file" class="file" name="file" />
+			<button type="button" class="but1" onclick="upload();">upload</button>
+		</div>
+	</div>
+  </body>
+  <script>
+	function update()
+	{
+		location.reload();
+	}
+	function back()
+	{
+		window.history.back(-1);
+	}
+	function upload(){
+		let file = document.getElementsByName('file')[0].files[0];
+
+		let formData = new FormData();
+		formData.append("file",file,file.name);
+
+		const config = {
+			headers: { "Content-Type": "multipart/form-data;boundary="+new Date().getTime() }
+		};
+
+		axios.post("/upload",formData,config).then(function (response) {
+			var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
+			alert(data);
+		}).catch(function (error) {
+			console.log(error);
+		});
+	}
+  </script>
+</html>

@@ -1,0 +1,14 @@
+{
+	"host":{
+		"ip":"127.0.0.1",
+		"port":"5200"
+	},
+	"qiniu":{
+		"domain":"demo",
+		"accesskey":"demo",
+		"secretkey":"demo",
+		"bucket":"demo",
+		"upload_path":"demo",
+		"zone":"Huadong"
+	}
+}
