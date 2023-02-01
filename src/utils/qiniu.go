@@ -1,8 +1,6 @@
 package utils
 
 import (
-	// "bytes"
-	"bytes"
 	"context"
 	"fmt"
 
@@ -16,9 +14,19 @@ var (
 	bucket    = ""
 )
 
-var zone *storage.Zone = nil
+var (
+	upload  *storage.FormUploader  = nil
+	manager *storage.BucketManager = nil
+	cfg     *storage.Config        = nil
+	zone    *storage.Zone          = nil
+	mac     *auth.Credentials      = nil
+)
 
 func Init(access, secret, buc, area string) error {
+	if len(access) == 0 || len(secret) == 0 || len(buc) == 0 {
+		return fmt.Errorf("empty config")
+	}
+
 	accessKey = access
 	secretKey = secret
 	bucket = buc
@@ -35,6 +43,16 @@ func Init(access, secret, buc, area string) error {
 	default:
 		return fmt.Errorf("wrong area config")
 	}
+
+	cfg = &storage.Config{
+		Zone:          zone,
+		UseHTTPS:      false,
+		UseCdnDomains: false,
+	}
+	mac = auth.New(accessKey, secretKey)
+	manager = storage.NewBucketManager(mac, cfg)
+	upload = storage.NewFormUploader(cfg)
+
 	return nil
 }
 
@@ -46,21 +64,12 @@ func UploadFromPath(key, filepath string) error {
 	putPolicy := storage.PutPolicy{
 		Scope: bucket,
 	}
-	mac := auth.New(accessKey, secretKey)
-	upToken := putPolicy.UploadToken(mac)
 
-	cfg := storage.Config{}
-	cfg.Zone = zone
-	// 是否使用https域名
-	cfg.UseHTTPS = false
-	// 上传是否使用CDN上传加速
-	cfg.UseCdnDomains = false
-
-	formUploader := storage.NewFormUploader(&cfg)
 	ret := storage.PutRet{}
 	putExtra := storage.PutExtra{}
 
-	err := formUploader.PutFile(context.Background(), &ret, upToken, key, filepath, &putExtra)
+	upToken := putPolicy.UploadToken(mac)
+	err := upload.PutFile(context.Background(), &ret, upToken, key, filepath, &putExtra)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -69,34 +78,33 @@ func UploadFromPath(key, filepath string) error {
 	return nil
 }
 
-func UploadFromByte(key string, data []byte, size int64) error {
-	if len(accessKey) == 0 || len(secretKey) == 0 || len(bucket) == 0 {
-		return fmt.Errorf("empty config")
+func GetDirList(dir string) ([]string, error) {
+	limit := 1000
+	prefix := dir + "/"
+	//初始列举marker为空
+	marker := ""
+	result := []string{}
+	for {
+		entries, _, nextMarker, hasNext, err := manager.ListFiles(bucket, prefix, "", marker, limit)
+		if err != nil {
+			return nil, err
+		}
+		for _, entry := range entries {
+			if len(entry.Key) <= len(prefix) {
+				continue
+			}
+			key := entry.Key[len(prefix):]
+			result = append(result, key)
+		}
+		if hasNext {
+			marker = nextMarker
+		} else {
+			break
+		}
 	}
+	return result, nil
+}
 
-	putPolicy := storage.PutPolicy{
-		Scope: bucket,
-	}
-	mac := auth.New(accessKey, secretKey)
-	upToken := putPolicy.UploadToken(mac)
-
-	cfg := storage.Config{}
-	//TODO change it to config
-	cfg.Zone = &storage.ZoneHuanan
-	// 是否使用https域名
-	cfg.UseHTTPS = false
-	// 上传是否使用CDN上传加速
-	cfg.UseCdnDomains = false
-
-	formUploader := storage.NewFormUploader(&cfg)
-	ret := storage.PutRet{}
-	putExtra := storage.PutExtra{}
-
-	err := formUploader.Put(context.Background(), &ret, upToken, key, bytes.NewReader(data), size, &putExtra)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	fmt.Println(ret.Key, ret.Hash)
-	return nil
+func DeleteFile(path string) error {
+	return manager.Delete(bucket, path)
 }

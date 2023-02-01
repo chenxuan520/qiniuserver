@@ -30,11 +30,13 @@ var (
 	GlobalConfig *Config
 )
 
-func init() {
+func Init() {
 	configFile := "./config/config.json"
 	data, err := ioutil.ReadFile(configFile)
 
 	if err != nil {
+		log.Println(err)
+		configFile = "config.json"
 		data, err = ioutil.ReadFile("/config/" + configFile)
 		if err != nil {
 			log.Println("Read config error!")

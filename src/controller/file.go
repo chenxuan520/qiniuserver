@@ -10,6 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ReqPath struct {
+	Path string `json:"path"`
+}
+
 func GetUploadFile(g *gin.Context) {
 	//TODO add it to config
 	header, err := g.FormFile("file")
@@ -22,24 +26,19 @@ func GetUploadFile(g *gin.Context) {
 		return
 	}
 
-	err=g.SaveUploadedFile(header,header.Filename)
-	if  err != nil {
-		res.Error(g, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	err=utils.Init(config.GlobalConfig.Qiniu.AccessKey, config.GlobalConfig.Qiniu.SecretKey, config.GlobalConfig.Qiniu.Bucket,config.GlobalConfig.Qiniu.Zone)
-	if err != nil {
-		res.Error(g,http.StatusBadRequest,err.Error())
-		return
-	}
-	err = utils.UploadFromPath(config.GlobalConfig.Qiniu.UploadPath+"/"+header.Filename,header.Filename)
+	err = g.SaveUploadedFile(header, header.Filename)
 	if err != nil {
 		res.Error(g, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err=os.Remove(header.Filename);
+	err = utils.UploadFromPath(config.GlobalConfig.Qiniu.UploadPath+"/"+header.Filename, header.Filename)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = os.Remove(header.Filename)
 	if err != nil {
 		res.Error(g, http.StatusBadRequest, err.Error())
 		return
@@ -47,5 +46,56 @@ func GetUploadFile(g *gin.Context) {
 
 	res.Success(g, map[string]interface{}{
 		"url": config.GlobalConfig.Qiniu.Domain + "/" + config.GlobalConfig.Qiniu.UploadPath + "/" + header.Filename,
+	})
+}
+
+func GetFileList(g *gin.Context) {
+	path := &ReqPath{}
+	err := g.Bind(path)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+	if path.Path == "" {
+		res.Error(g, http.StatusBadRequest, "cannot get dir")
+		return
+	}
+
+	list, err := utils.GetDirList(path.Path)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	res.Success(g, map[string]interface{}{
+		"list": list,
+	})
+}
+
+func DeleteFile(g *gin.Context) {
+	path := &ReqPath{}
+	err := g.Bind(path)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+	if path.Path == "" {
+		res.Error(g, http.StatusBadRequest, "cannot get dir")
+		return
+	}
+
+	err = utils.DeleteFile(path.Path)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	res.Success(g, nil)
+}
+
+func GetInfo(g *gin.Context) {
+	res.Success(g, map[string]interface{}{
+		"path":   config.GlobalConfig.Qiniu.UploadPath,
+		"domain": config.GlobalConfig.Qiniu.Domain,
 	})
 }
