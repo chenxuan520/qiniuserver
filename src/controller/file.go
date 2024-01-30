@@ -32,7 +32,12 @@ func GetUploadFile(g *gin.Context) {
 		return
 	}
 
-	err = utils.UploadFromPath(config.GlobalConfig.Qiniu.UploadPath+"/"+header.Filename, header.Filename)
+	fileName := header.Filename
+	if config.GlobalConfig.Qiniu.FileName != "" {
+		fileName = utils.CreateFileName(config.GlobalConfig.Qiniu.FileName, fileName)
+	}
+
+	err = utils.UploadFromPath(config.GlobalConfig.Qiniu.UploadPath+"/"+fileName, header.Filename)
 	if err != nil {
 		res.Error(g, http.StatusBadRequest, err.Error())
 		return
@@ -45,7 +50,7 @@ func GetUploadFile(g *gin.Context) {
 	}
 
 	res.Success(g, map[string]interface{}{
-		"url": config.GlobalConfig.Qiniu.Domain + "/" + config.GlobalConfig.Qiniu.UploadPath + "/" + header.Filename,
+		"url": config.GlobalConfig.Qiniu.Domain + "/" + config.GlobalConfig.Qiniu.UploadPath + "/" + fileName,
 	})
 }
 

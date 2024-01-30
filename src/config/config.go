@@ -9,10 +9,11 @@ import (
 
 type Qiniu struct {
 	Domain     string `json:"domain"`
-	AccessKey  string `json:"accesskey"`
-	SecretKey  string `json:"secretkey"`
+	AccessKey  string `json:"access_key"`
+	SecretKey  string `json:"secret_key"`
 	Bucket     string `json:"bucket"`
 	UploadPath string `json:"upload_path"`
+	FileName   string `json:"file_name"`
 	Zone       string `json:"zone"`
 }
 

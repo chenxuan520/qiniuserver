@@ -2,7 +2,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<script src="https://unpkg.zhimg.com/axios@1.0.0/dist/axios.min.js"></script>
 	<head>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" crossorigin="anonymous">
 		<meta name="generator">
 		<title>online disk</title>
 		<style>
@@ -213,7 +213,7 @@
 		<div class="container">
 			<div id="contact">
 				<div id="div">
-					<h3 class="glyphicon glyphicon-cloud">当前目录文件</h3>
+					<h3 class="glyphicon glyphicon-cloud" id="head">当前目录文件</h3>
 				</div>
 				<input type="text" id="mkdir">
 				<button type="button" id="delete" onclick="remove();">delete</button>
@@ -229,30 +229,32 @@
 	axios.get("/info").then(function (response){
 		way=JSON.parse(JSON.stringify(response.data))['data']['path']
 		domain=JSON.parse(JSON.stringify(response.data))['data']['domain']
-	});
-	axios.post("/list", {
-		path:"test"
-	}).then(function (response) {
-	var arr=JSON.parse(JSON.stringify(response.data))['data']['list'];
-	var div = document.getElementById("div");
-	for(var i in arr)
-	{
-		if(arr[i].indexOf("link")!=-1)
-			continue;
-		var linkTmp = document.createElement("a");
-		linkTmp.innerText=" "+arr[i];
-		linkTmp.href =domain+"/"+way+"/"+arr[i];
-		console.log(arr[i]);
-		if(window.location.pathname.indexOf("link")==-1&&arr[i].indexOf(".")==-1){
-			linkTmp.className="glyphicon glyphicon-folder-open";
-		}else{
-			linkTmp.className="glyphicon glyphicon-file";
-			linkTmp.download=arr[i];
+		var div = document.getElementById("head");
+		div.innerText=div.innerText+" /"+way
+		axios.post("/list", {
+			path:way
+		}).then(function (response) {
+		var arr=JSON.parse(JSON.stringify(response.data))['data']['list'];
+		var div = document.getElementById("div");
+		for(var i in arr)
+		{
+			if(arr[i].indexOf("link")!=-1)
+				continue;
+			var linkTmp = document.createElement("a");
+			linkTmp.innerText=" "+arr[i];
+			linkTmp.href =domain+"/"+way+"/"+arr[i];
+			console.log(arr[i]);
+			if(window.location.pathname.indexOf("link")==-1&&arr[i].indexOf(".")==-1){
+				linkTmp.className="glyphicon glyphicon-folder-open";
+			}else{
+				linkTmp.className="glyphicon glyphicon-file";
+				linkTmp.download=arr[i];
+			}
+			div.appendChild(linkTmp);
+			div.appendChild(document.createElement("br"));
 		}
-		div.appendChild(linkTmp);
-		div.appendChild(document.createElement("br"));
-	}
-});
+		});
+	});
 	</script>
 	<script>
 		function remove()
@@ -268,8 +270,8 @@
 			axios.post("/delete", {
 				path:way+"/"+sen.value
 			}).then(function (response) {
-				var status=JSON.parse(JSON.stringify(response.data))['status'];
-				alert(status);
+				// 周到这里表示返回200一定成功
+				alert("Operator Success");
 				location.reload();
 				sen.value="";
 			});

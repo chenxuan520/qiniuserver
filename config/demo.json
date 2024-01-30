@@ -5,10 +5,11 @@
 	},
 	"qiniu":{
 		"domain":"demo",
-		"accesskey":"demo",
-		"secretkey":"demo",
+		"access_key":"demo",
+		"secret_key":"demo",
 		"bucket":"demo",
 		"upload_path":"demo",
+		"file_name":"",
 		"zone":"Huadong"
 	}
 }
