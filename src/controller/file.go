@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"io"
 	"net/http"
 	"os"
 
@@ -14,7 +15,62 @@ type ReqPath struct {
 	Path string `json:"path"`
 }
 
-func GetUploadFile(g *gin.Context) {
+func UploadByUrl(g *gin.Context) {
+	path := &ReqPath{}
+	err := g.Bind(path)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+	if path.Path == "" {
+		res.Error(g, http.StatusBadRequest, "cannot get dir")
+		return
+	}
+
+	url := path.Path
+	// 发起 GET 请求
+	response, err := http.Get(url)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// 创建文件来保存下载内容
+	fileName := utils.CreateFileName(config.GlobalConfig.Qiniu.FileName, utils.GenerateRandomString(6)+".url")
+	file, err := os.Create(fileName)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+	defer file.Close()
+
+	// 将下载内容写入文件
+	_, err = io.Copy(file, response.Body)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+	defer response.Body.Close()
+
+	// 保存到七牛云
+	err = utils.UploadFromPath(config.GlobalConfig.Qiniu.UploadPath+"/"+fileName, fileName)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = os.Remove(fileName)
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	res.Success(g, map[string]interface{}{
+		"url": config.GlobalConfig.Qiniu.Domain + "/" + config.GlobalConfig.Qiniu.UploadPath + "/" + fileName,
+	})
+}
+
+func UploadFile(g *gin.Context) {
 	//TODO add it to config
 	header, err := g.FormFile("file")
 	if err != nil {

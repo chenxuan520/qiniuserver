@@ -215,8 +215,10 @@
 				<div id="div">
 					<h3 class="glyphicon glyphicon-cloud" id="head">当前目录文件</h3>
 				</div>
+				<button type="button" id="back" onclick="list();">show_list</button>
 				<input type="text" id="mkdir">
 				<button type="button" id="delete" onclick="remove();">delete</button>
+				<button type="button" id="update" onclick="uploadurl();">upload_url</button>
 
 				<h4 class="glyphicon glyphicon-floppy-disk" >点击按钮选择文件</h4><input type="file" class="file" name="file" />
 				<button type="button" class="but1" onclick="upload();">upload</button>
@@ -231,32 +233,50 @@
 		domain=JSON.parse(JSON.stringify(response.data))['data']['domain']
 		var div = document.getElementById("head");
 		div.innerText=div.innerText+" /"+way
+	});
+	function list(){
 		axios.post("/list", {
 			path:way
 		}).then(function (response) {
-		var arr=JSON.parse(JSON.stringify(response.data))['data']['list'];
-		var div = document.getElementById("div");
-		for(var i in arr)
-		{
-			if(arr[i].indexOf("link")!=-1)
-				continue;
-			var linkTmp = document.createElement("a");
-			linkTmp.innerText=" "+arr[i];
-			linkTmp.href =domain+"/"+way+"/"+arr[i];
-			console.log(arr[i]);
-			if(window.location.pathname.indexOf("link")==-1&&arr[i].indexOf(".")==-1){
-				linkTmp.className="glyphicon glyphicon-folder-open";
-			}else{
-				linkTmp.className="glyphicon glyphicon-file";
-				linkTmp.download=arr[i];
+			var arr=JSON.parse(JSON.stringify(response.data))['data']['list'];
+			var div = document.getElementById("div");
+			for(var i in arr)
+			{
+				if(arr[i].indexOf("link")!=-1)
+					continue;
+				var linkTmp = document.createElement("a");
+				linkTmp.innerText=" "+arr[i];
+				linkTmp.href =domain+"/"+way+"/"+arr[i];
+				console.log(arr[i]);
+				if(window.location.pathname.indexOf("link")==-1&&arr[i].indexOf(".")==-1){
+					linkTmp.className="glyphicon glyphicon-folder-open";
+				}else{
+					linkTmp.className="glyphicon glyphicon-file";
+					linkTmp.download=arr[i];
+				}
+				div.appendChild(linkTmp);
+				div.appendChild(document.createElement("br"));
 			}
-			div.appendChild(linkTmp);
-			div.appendChild(document.createElement("br"));
-		}
 		});
-	});
+	}
 	</script>
 	<script>
+		function uploadurl(){
+			var sen=document.getElementById("mkdir");
+			if(sen.value.length==0){
+				alert("please choose file");
+				return;
+			}
+			axios.post("/upload_url",{
+				path:sen.value
+			}).then(function (response) {
+				// 周到这里表示返回200一定成功
+				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
+				alert(data);
+				location.reload();
+				sen.value="";
+			});
+		}
 		function remove()
 		{
 			var sen=document.getElementById("mkdir");

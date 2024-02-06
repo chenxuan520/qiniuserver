@@ -22,7 +22,8 @@ func main() {
 	r.StaticFile("/", "./assert/index.html")
 
 	r.GET("/info", controller.GetInfo)
-	r.POST("/upload", controller.GetUploadFile)
+	r.POST("/upload", controller.UploadFile)
+	r.POST("/upload_url", controller.UploadByUrl)
 	r.POST("/list", controller.GetFileList)
 	r.POST("/delete", controller.DeleteFile)
 
