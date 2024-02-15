@@ -1,10 +1,12 @@
+<!DOCTYPE html>
 <html lang="zh-CN">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<script src="https://unpkg.zhimg.com/axios@1.0.0/dist/axios.min.js"></script>
 	<head>
 		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+		<link rel="shortcut icon" href="https://sslprod.oss-cn-shanghai.aliyuncs.com/stable/head_pic/head_58063-84952.png" /> 
 		<meta name="generator">
-		<title>online disk</title>
+		<title>七牛云在线网盘</title>
 		<style>
 * {
 	margin:0;
@@ -53,6 +55,10 @@
 		background:#F9F9F9;
 		padding:0px;
 		margin:10px 0;
+	}
+
+	#file {
+		display: none;
 	}
 
 	#contact h3 {
@@ -137,7 +143,7 @@
 		cursor:pointer;
 		width:100%;
 		border:none;
-		background:#FAAC58;
+		background:#99ff33;
 		color:#000;
 		margin:0 0 5px;
 		padding:10px;
@@ -201,6 +207,15 @@
 		transition:background-color 0.3s ease-in-out;
 	}
 
+	#drop-area {
+		width:100%;
+		height: 200px;
+		border: 2px dashed #ccc;
+		text-align: center;
+		line-height: 200px;
+		font-size: 20px;
+	}
+
 	#contact button[type="button"]:active { box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.5); }
 
 	#contact input:focus, #contact textarea:focus {
@@ -220,8 +235,10 @@
 				<button type="button" id="delete" onclick="remove();">delete</button>
 				<button type="button" id="update" onclick="uploadurl();">upload_url</button>
 
-				<h4 class="glyphicon glyphicon-floppy-disk" >点击按钮选择文件</h4><input type="file" class="file" name="file" />
-				<button type="button" class="but1" onclick="upload();">upload</button>
+				<!-- <h4 class="glyphicon glyphicon-floppy-disk" >点击按钮选择文件</h4> -->
+				<input type="file" class="file" name="file" id="file"/>
+				<!-- <button type="button" class="but1" onclick="upload();">upload</button> -->
+				<div id="drop-area">点击,拖入或粘贴上传文件</div>
 			</div>
 		</div>
 	</body>
@@ -235,6 +252,13 @@
 		div.innerText=div.innerText+" /"+way
 	});
 	function list(){
+		if(document.getElementById("div").children.length > 1){
+			var parent=document.getElementById("div")
+			while (parent.lastChild&&parent.children.length>1) {
+				parent.removeChild(parent.lastChild);
+			}
+			return;
+		}
 		axios.post("/list", {
 			path:way
 		}).then(function (response) {
@@ -259,6 +283,59 @@
 			}
 		});
 	}
+	</script>
+	<script>
+		// 拖入文件配置
+		var dropArea = document.getElementById('drop-area');
+
+		dropArea.addEventListener('dragover', function(e) {
+			e.preventDefault();
+			dropArea.style.borderColor = 'blue';
+		});
+
+		dropArea.addEventListener('dragleave', function() {
+			dropArea.style.borderColor = '#ccc';
+		});
+
+		dropArea.addEventListener('drop', function(e) {
+			e.preventDefault();
+			dropArea.style.borderColor = '#ccc';
+
+			var files = e.dataTransfer.files;
+			if (files.length > 0) {
+				var file = files[0];
+				dropArea.innerText=file.name+"上传中";
+				uploadFile(file)
+				dropArea.innerText="点击,拖入或粘贴上传文件";
+			}
+		});
+
+		document.addEventListener('paste', function(e) {
+			var items = e.clipboardData.items;
+
+			for (var i = 0; i < items.length; i++) {
+				if (items[i].kind === 'file' && items[i].type.indexOf('image') !== -1) {
+					var file = items[i].getAsFile();
+					var newFilename = "pasteboard"; // 设置新文件名
+					var newFile = new File([file], newFilename, {type: file.type}); // 创建新File对象
+					dropArea.innerHTML = newFile.name+"上传中";
+					uploadFile(newFile)
+					dropArea.innerText="点击,拖入或粘贴上传文件";
+					break;
+				}
+			}
+		});
+
+		var fileInput = document.getElementById('file');
+		fileInput.addEventListener('change', function(e) {
+			var file = e.target.files[0];
+			dropArea.innerText=file.name+"上传中";
+			uploadFile(file)
+			dropArea.innerText="点击,拖入或粘贴上传文件";
+		});
+		dropArea.addEventListener('click', function() {
+			fileInput.click();
+		});
 	</script>
 	<script>
 		function uploadurl(){
@@ -290,7 +367,7 @@
 			axios.post("/delete", {
 				path:way+"/"+sen.value
 			}).then(function (response) {
-				// 周到这里表示返回200一定成功
+				// 到这里表示返回200一定成功
 				alert("Operator Success");
 				location.reload();
 				sen.value="";
@@ -304,9 +381,7 @@
 		{
 			window.history.back(-1);
 		}
-		function upload(){
-			let file = document.getElementsByName('file')[0].files[0];
-
+		function uploadFile(file){
 			let formData = new FormData();
 			formData.append("file",file,file.name);
 
@@ -316,10 +391,22 @@
 
 			axios.post("/upload",formData,config).then(function (response) {
 				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
+				file = document.getElementsByName('file')[0].files[0];
 				alert(data);
 			}).catch(function (error) {
 				console.log(error);
+				alert(error)
 			});
+		}
+		function upload(){
+			let elem=document.getElementsByName('file')[0]
+			if(elem.files.length<=0){
+				alert('请选择或者拖入文件');
+				return
+			}
+			let file = elem.files[0];
+			elem.value='';
+			uploadFile(file);
 		}
 	</script>
 </html>
