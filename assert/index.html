@@ -6,7 +6,7 @@
 		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" crossorigin="anonymous">
 		<link rel="shortcut icon" href="https://sslprod.oss-cn-shanghai.aliyuncs.com/stable/head_pic/head_58063-84952.png" /> 
 		<meta name="generator">
-		<title>七牛云在线网盘</title>
+		<title>七牛云在线图床</title>
 		<style>
 * {
 	margin:0;
@@ -59,6 +59,13 @@
 
 	#file {
 		display: none;
+	}
+
+	#contact h2 {
+		color: #F96;
+		display: block;
+		font-size: 25px;
+		font-weight: 400;
 	}
 
 	#contact h3 {
@@ -228,7 +235,7 @@
 		<div class="container">
 			<div id="contact">
 				<div id="div">
-					<h3 class="glyphicon glyphicon-cloud" id="head">当前目录文件</h3>
+					<h2 class="glyphicon glyphicon-cloud" id="head">当前目录文件</h2>
 				</div>
 				<button type="button" id="back" onclick="list();">show_list</button>
 				<input type="text" id="mkdir">
@@ -242,6 +249,9 @@
 			</div>
 		</div>
 	</body>
+	<script src="https://unpkg.com/sweetalert2@11"></script>
+	<script charset="utf-8">
+	</script>
 	<script>
 	var way="";
 	var domain="";
@@ -338,22 +348,6 @@
 		});
 	</script>
 	<script>
-		function uploadurl(){
-			var sen=document.getElementById("mkdir");
-			if(sen.value.length==0){
-				alert("please choose file");
-				return;
-			}
-			axios.post("/upload_url",{
-				path:sen.value
-			}).then(function (response) {
-				// 周到这里表示返回200一定成功
-				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
-				alert(data);
-				location.reload();
-				sen.value="";
-			});
-		}
 		function remove()
 		{
 			var sen=document.getElementById("mkdir");
@@ -381,6 +375,20 @@
 		{
 			window.history.back(-1);
 		}
+		function uploadurl(){
+			var sen=document.getElementById("mkdir");
+			if(sen.value.length==0){
+				alert("please choose file");
+				return;
+			}
+			axios.post("/upload_url",{
+				path:sen.value
+			}).then(function (response) {
+				// 周到这里表示返回200一定成功
+				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
+				uploadResultDeal(data);
+			});
+		}
 		function uploadFile(file){
 			let formData = new FormData();
 			formData.append("file",file,file.name);
@@ -391,22 +399,37 @@
 
 			axios.post("/upload",formData,config).then(function (response) {
 				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
-				file = document.getElementsByName('file')[0].files[0];
-				alert(data);
+				uploadResultDeal(data);
 			}).catch(function (error) {
 				console.log(error);
 				alert(error)
 			});
 		}
-		function upload(){
-			let elem=document.getElementsByName('file')[0]
-			if(elem.files.length<=0){
-				alert('请选择或者拖入文件');
-				return
-			}
-			let file = elem.files[0];
-			elem.value='';
-			uploadFile(file);
+		function uploadResultDeal(data){
+			console.log(data);
+			let ret=setClipboard(data);
+			var parts = data.split('/');
+			var lastPart = parts[parts.length - 1];
+			var input = document.getElementById("mkdir");
+			console.log(lastPart);
+			input.value=lastPart;
+		}
+		function setClipboard(textToCopy){
+			navigator.clipboard.writeText(textToCopy)
+				.then(() => {
+					Swal.fire({
+							  title: '链接(已复制到粘贴板)',
+							  text: textToCopy,
+							  icon: 'info',
+							  showConfirmButton: false,
+							  timer: 2000
+					});
+				})
+				.catch((error) => {
+					console.error('写入剪贴板时出错：', error);
+					alert(textToCopy);
+					ret=error;
+				});
 		}
 	</script>
 </html>

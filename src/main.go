@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/chenxuan520/qiniuserver/config"
@@ -27,5 +29,6 @@ func main() {
 	r.POST("/list", controller.GetFileList)
 	r.POST("/delete", controller.DeleteFile)
 
+	log.Println("Runner in http://" + config.GlobalConfig.Host.Ip + ":" + config.GlobalConfig.Host.Port)
 	r.Run(config.GlobalConfig.Host.Ip + ":" + config.GlobalConfig.Host.Port)
 }
