@@ -291,6 +291,14 @@
 				div.appendChild(linkTmp);
 				div.appendChild(document.createElement("br"));
 			}
+		}).catch(error => {
+			if (error.response.status === 400) {
+				console.log('发生了400错误：', error.response.data);
+				alert(error.response.data.data);
+			} else {
+				console.error('请求出错：', error.message);
+				alert("请求出错");
+			}
 		});
 	}
 	</script>
@@ -365,6 +373,14 @@
 				alert("Operator Success");
 				location.reload();
 				sen.value="";
+			}).catch(error => {
+				if (error.response.status === 400) {
+					console.log('发生了400错误：', error.response.data);
+					alert(error.response.data.data);
+				} else {
+					console.error('请求出错：', error.message);
+					alert("请求出错");
+				}
 			});
 		}
 		function update()
@@ -387,6 +403,14 @@
 				// 周到这里表示返回200一定成功
 				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
 				uploadResultDeal(data);
+			}).catch(error => {
+				if (error.response.status === 400) {
+					console.log('发生了400错误：', error.response.data);
+					alert(error.response.data.data);
+				} else {
+					console.error('请求出错：', error.message);
+					alert("请求出错");
+				}
 			});
 		}
 		function uploadFile(file){
@@ -401,8 +425,13 @@
 				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
 				uploadResultDeal(data);
 			}).catch(function (error) {
-				console.log(error);
-				alert(error)
+				if (error.response.status === 400) {
+					console.log('发生了400错误：', error.response.data);
+					alert(error.response.data.data);
+				} else {
+					console.error('请求出错：', error.message);
+					alert("请求出错");
+				}
 			});
 		}
 		function uploadResultDeal(data){
