@@ -28,6 +28,8 @@ func main() {
 	r.POST("/upload_url", controller.UploadByUrl)
 	r.POST("/list", controller.GetFileList)
 	r.POST("/delete", controller.DeleteFile)
+	// this api for test
+	r.POST("/upload_test", controller.UploadTest)
 
 	log.Println("Runner in http://" + config.GlobalConfig.Host.Ip + ":" + config.GlobalConfig.Host.Port)
 	r.Run(config.GlobalConfig.Host.Ip + ":" + config.GlobalConfig.Host.Port)

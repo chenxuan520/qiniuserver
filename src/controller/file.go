@@ -15,6 +15,22 @@ type ReqPath struct {
 	Path string `json:"path"`
 }
 
+func UploadTest(g *gin.Context) {
+	header, err := g.FormFile("file")
+	if err != nil {
+		res.Error(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	fileName := header.Filename
+	fileName = utils.CreateFileName(config.GlobalConfig.Qiniu.FileName, fileName)
+
+	res.Success(g, map[string]interface{}{
+		"url": config.GlobalConfig.Qiniu.Domain + "/" + config.GlobalConfig.Qiniu.UploadPath + "/" + fileName,
+	})
+
+}
+
 func UploadByUrl(g *gin.Context) {
 	path := &ReqPath{}
 	err := g.Bind(path)
@@ -77,10 +93,6 @@ func UploadFile(g *gin.Context) {
 		res.Error(g, http.StatusBadRequest, err.Error())
 		return
 	}
-	if err != nil {
-		res.Error(g, http.StatusBadRequest, err.Error())
-		return
-	}
 
 	err = g.SaveUploadedFile(header, header.Filename)
 	if err != nil {
@@ -89,9 +101,7 @@ func UploadFile(g *gin.Context) {
 	}
 
 	fileName := header.Filename
-	if config.GlobalConfig.Qiniu.FileName != "" {
-		fileName = utils.CreateFileName(config.GlobalConfig.Qiniu.FileName, fileName)
-	}
+	fileName = utils.CreateFileName(config.GlobalConfig.Qiniu.FileName, fileName)
 
 	err = utils.UploadFromPath(config.GlobalConfig.Qiniu.UploadPath+"/"+fileName, header.Filename)
 	if err != nil {

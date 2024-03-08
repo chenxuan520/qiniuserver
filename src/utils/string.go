@@ -9,6 +9,8 @@ import (
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
 
 func CreateFileName(format string, fileOriginName string) string {
+	// replace all space to underscore
+	fileOriginName = strings.ReplaceAll(fileOriginName, " ", "_")
 	if format == "" {
 		return fileOriginName
 	}

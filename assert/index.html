@@ -334,7 +334,7 @@
 			for (var i = 0; i < items.length; i++) {
 				if (items[i].kind === 'file' && items[i].type.indexOf('image') !== -1) {
 					var file = items[i].getAsFile();
-					var newFilename = "pasteboard"; // 设置新文件名
+					var newFilename = "pasteboard.paste"; // 设置新文件名
 					var newFile = new File([file], newFilename, {type: file.type}); // 创建新File对象
 					dropArea.innerHTML = newFile.name+"上传中";
 					uploadFile(newFile)
@@ -400,7 +400,7 @@
 			axios.post("/upload_url",{
 				path:sen.value
 			}).then(function (response) {
-				// 周到这里表示返回200一定成功
+				// 到这里表示返回200一定成功
 				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
 				uploadResultDeal(data);
 			}).catch(error => {
@@ -423,6 +423,7 @@
 
 			axios.post("/upload",formData,config).then(function (response) {
 				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
+				alert(data);
 				uploadResultDeal(data);
 			}).catch(function (error) {
 				if (error.response.status === 400) {
@@ -436,12 +437,12 @@
 		}
 		function uploadResultDeal(data){
 			console.log(data);
-			let ret=setClipboard(data);
 			var parts = data.split('/');
 			var lastPart = parts[parts.length - 1];
 			var input = document.getElementById("mkdir");
 			console.log(lastPart);
 			input.value=lastPart;
+			let ret=setClipboard(data);
 		}
 		function setClipboard(textToCopy){
 			navigator.clipboard.writeText(textToCopy)
