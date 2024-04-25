@@ -35,6 +35,9 @@
 			line-height: 30px;
 			color: #777;
 			background: #F6CECE;
+			background-image: none;
+			background-repeat: no-repeat;
+			background-size: cover;
 		}
 
 		.container {
@@ -52,7 +55,7 @@
 		}
 
 		#contact {
-			background: #F9F9F9;
+			background: rgba(128, 128, 128, 0.3);
 			padding: 25px;
 			margin: 5px 0;
 		}
@@ -288,17 +291,16 @@
 
 		.showbtn {
 			width: 100%;
-			border: none;
-			background: #00FF80;
-			color: #000;
+			background: #09C;
+			color: #fff;
 			margin: 0 0 5px;
 			padding: 10px;
-			font-size: 15px;
+			font-size: 20px;
 
 		}
 
 		.showbtn:hover {
-			background: #09C;
+			background: lightblue;
 			-webkit-transition: background 0.3s ease-in-out;
 			-moz-transition: background 0.3s ease-in-out;
 			transition: background-color 0.3s ease-in-out;
@@ -316,8 +318,8 @@
 
 		.showbtn {
 			flex: 1;
-			border: black 2px solid;
-			margin: 10px;
+			margin-top: 10px;
+			margin-left: 5px;
 		}
 
 		#div {
@@ -365,7 +367,8 @@
 				<img id="image-display" class="placeimg" src="http://cdn.diangroup.top/assets/202404426000941jbhwxv" />
 			</div>
 			<div>
-				<button class="showbtn" type="button" id="link" onclick="window.open(imageUrl, '_blank');">OPEN</button>
+				<button class="showbtn" type="button" id="link"
+					onclick="window.open(imageUrl, '_blank');">OPEN=></button>
 			</div>
 
 
@@ -439,6 +442,22 @@
 			}
 		});
 	}
+	function throttle(func, wait) {
+		let timeout = null;
+		let firstTime = true
+		return function () {
+			if (firstTime) {
+				func.apply(this, arguments);
+				firstTime = false;
+				return
+			}
+			if (timeout) {
+				return;
+			}
+			timeout = setTimeout(() => func.apply(this, arguments), wait);
+
+		}
+	}
 
 	function showImage(index) {
 		imageUrl = domain + "/" + way + "/" + lists[index];
@@ -448,6 +467,11 @@
 		// console.log("点击的图片索引为：" + lists[index]);
 		// console.log("图片地址为：" + imageUrl);
 		// 在指定区域展示图片的逻辑...
+		const throttleSetBackgroundImage = throttle(function () {
+			document.body.style.backgroundImage = 'url(' + imageUrl + ')';
+		}, 300);
+
+		throttleSetBackgroundImage();
 	}
 </script>
 <script>
