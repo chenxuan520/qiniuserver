@@ -63,11 +63,6 @@
 			margin: 0px 0;
 		}
 
-		#div {
-			background: #F9F9F9;
-			padding: 0px;
-			margin: 10px 0;
-		}
 
 		#file {
 			display: none;
@@ -108,7 +103,6 @@
 		#contact textarea {
 			width: 100%;
 			border: 1px solid #CCC;
-			background: #FFF;
 			margin: 0 0 5px;
 			padding: 10px;
 		}
@@ -273,13 +267,14 @@
 
 		.showdata {
 			flex: 1;
-			background-color: yellow;
+			display: flex;
+			flex-direction: row;
+			gap: 20px;
 		}
 
 		.bg {
-			background-color: black;
-			width: 300px;
-			height: 300px;
+			background-color: rgba(128, 128, 128, 0.3);
+			width: 70%;
 			margin: 5px 0;
 		}
 
@@ -328,6 +323,14 @@
 		#div {
 			background-color: rgba(128, 128, 128, 0.5)
 		}
+
+		.placeimg {
+			/* 让图片在父元素下自适应大小 */
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+
+		}
 	</style>
 </head>
 
@@ -359,17 +362,22 @@
 
 		<div class="showdata">
 			<div class="bg">
-				<img id="displayImg" src="">
+				<img id="image-display" class="placeimg" src="http://cdn.diangroup.top/assets/202404426000941jbhwxv" />
 			</div>
+			<div>
+				<button class="showbtn" type="button" id="link" onclick="window.open(imageUrl, '_blank');">OPEN</button>
+			</div>
+
+
 		</div>
-
-
-	</div>
 </body>
 <script src="https://unpkg.com/sweetalert2@11"></script>
 <script charset="utf-8">
 </script>
 <script>
+	let imageUrl = "http://cdn.diangroup.top/assets/202404426000941jbhwxv";
+	let lurl = "http://cdn.diangroup.top/assets/202404426000941jbhwxv";
+	let lists = [];
 	var way = "";
 	var domain = "";
 	axios.get("/info").then(function (response) {
@@ -390,11 +398,12 @@
 			path: way
 		}).then(function (response) {
 			var arr = JSON.parse(JSON.stringify(response.data))['data']['list'];
+			lists = arr
 			var div = document.getElementById("div");
 			for (var i in arr) {
 				if (arr[i].indexOf("link") != -1)
 					continue;
-				var linkTmp = document.createElement("a");
+				var linkTmp = document.createElement("p");
 				linkTmp.innerText = " " + arr[i];
 				linkTmp.href = domain + "/" + way + "/" + arr[i];
 				linkTmp.target = "_blank";
@@ -406,6 +415,16 @@
 					linkTmp.download = arr[i];
 				}
 				linkTmp.style.fontSize = "16px";
+				linkTmp.style.color = "rgba(0, 153, 204)";
+				linkTmp.style.cursor = "pointer"; // 设置鼠标样式为手型，表示可点击
+
+				linkTmp.addEventListener("click", function (index) {
+					return function () {
+						// 点击事件处理函数
+						showImage(index);
+					};
+				}(i)); // 使用闭包保存当前索引值
+
 				div.appendChild(linkTmp);
 				div.appendChild(document.createElement("br"));
 
@@ -419,6 +438,16 @@
 				alert("请求出错");
 			}
 		});
+	}
+
+	function showImage(index) {
+		imageUrl = domain + "/" + way + "/" + lists[index];
+		lurl = lists[index];
+		document.getElementById('mkdir').value = lurl;
+		document.getElementById('image-display').src = imageUrl;
+		// console.log("点击的图片索引为：" + lists[index]);
+		// console.log("图片地址为：" + imageUrl);
+		// 在指定区域展示图片的逻辑...
 	}
 </script>
 <script>
