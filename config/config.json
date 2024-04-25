@@ -1,0 +1,15 @@
+{
+	"host": {
+		"ip": "127.0.0.1",
+		"port": "5200"
+	},
+	"qiniu": {
+		"domain": "http://cdn.diangroup.top",
+		"access_key": "weMMUl-_FyeP3RCphS-eZ6ryeJQKKtgGWNr2RUwF",
+		"secret_key": "8kTe6k2f4tb99ztqEkhOVOwCgioE5Eosv7rx0mnM",
+		"bucket": "kkkkspace",
+		"upload_path": "assets",
+		"file_name": "%d%r",
+		"zone": "Huabei"
+	}
+}
