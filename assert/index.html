@@ -1,295 +1,494 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script src="https://unpkg.zhimg.com/axios@1.0.0/dist/axios.min.js"></script>
-	<head>
-		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" crossorigin="anonymous">
-		<link rel="shortcut icon" href="https://sslprod.oss-cn-shanghai.aliyuncs.com/stable/head_pic/head_58063-84952.png" /> 
-		<meta name="generator">
-		<title>七牛云在线图床</title>
-		<style>
-* {
-	margin:0;
-	padding:0;
-	box-sizing:border-box;
-	-webkit-box-sizing:border-box;
-	-moz-box-sizing:border-box;
-	-webkit-font-smoothing:antialiased;
-	-moz-font-smoothing:antialiased;
-	-o-font-smoothing:antialiased;
-	font-smoothing:antialiased;
-	text-rendering:optimizeLegibility;
-	font-family:Microsoft Yahei, "Open Sans", Helvetica, Arial, sans-serif;
-}
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="https://unpkg.zhimg.com/axios@1.0.0/dist/axios.min.js"></script>
 
-	body {
-		font-family:Microsoft Yahei, "Open Sans", Helvetica, Arial, sans-serif;
-		font-weight:300;
-		font-size: 12px;
-		line-height:30px;
-		color:#777;
-		background:#F6CECE;
-	}
+<head>
+	<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"
+		crossorigin="anonymous">
+	<link rel="shortcut icon"
+		href="https://sslprod.oss-cn-shanghai.aliyuncs.com/stable/head_pic/head_58063-84952.png" />
+	<meta name="generator">
+	<title>七牛云在线图床</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-webkit-font-smoothing: antialiased;
+			-moz-font-smoothing: antialiased;
+			-o-font-smoothing: antialiased;
+			font-smoothing: antialiased;
+			text-rendering: optimizeLegibility;
+			font-family: Microsoft Yahei, "Open Sans", Helvetica, Arial, sans-serif;
+		}
 
-	.container {
-		max-width:400px;
-		width:100%;
-		margin:0 auto;
-		position:relative;
-	}
-	#contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea, #contact button[type="button"], #contact button[type="button"] { font:400 12px/16px Microsoft Yahei,"Open Sans", Helvetica, Arial, sans-serif; }
+		body {
+			position: absolute;
+			width: 100vw;
+			height: 100vh;
+			font-family: Microsoft Yahei, "Open Sans", Helvetica, Arial, sans-serif;
+			font-weight: 300;
+			font-size: 12px;
+			line-height: 30px;
+			color: #777;
+			background: lightblue;
+			background-image: none;
+			background-repeat: no-repeat;
+			background-size: cover;
+		}
 
-	#contact {
-		background:#F9F9F9;
-		padding:25px;
-		margin:5px 0;
-	}
+		.container {
+			flex: 1;
+		}
 
-	#contact1 {
-		background:#F9F9F9;
-		padding:25px;
-		margin:0px 0;
-	}
+		#contact input[type="text"],
+		#contact input[type="email"],
+		#contact input[type="tel"],
+		#contact input[type="url"],
+		#contact textarea,
+		#contact button[type="button"],
+		#contact button[type="button"] {
+			font: 400 12px/16px Microsoft Yahei, "Open Sans", Helvetica, Arial, sans-serif;
+		}
 
-	#div {
-		background:#F9F9F9;
-		padding:0px;
-		margin:10px 0;
-	}
+		#contact {
+			height: 95vh;
+			background: rgba(128, 128, 128, 0.3);
+			padding: 25px;
+			margin: 5px 0;
+		}
 
-	#file {
-		display: none;
-	}
+		#contact1 {
+			background: #F9F9F9;
+			padding: 25px;
+			margin: 0px 0;
+		}
 
-	#contact h2 {
-		color: #F96;
-		display: block;
-		font-size: 25px;
-		font-weight: 400;
-	}
 
-	#contact h3 {
-		color: #F96;
-		display: block;
-		font-size: 20px;
-		font-weight: 400;
-	}
+		#file {
+			display: none;
+		}
 
-	#contact h4 {
-		margin:5px 0 15px;
-		display:block;
-		font-size:13px;
-	}
+		#contact h2 {
+			color: #F96;
+			display: block;
+			font-size: 25px;
+			font-weight: 400;
+		}
 
-	fieldset {
-		border: medium none !important;
-		margin: 0 0 10px;
-		min-width: 100%;
-		padding: 0;
-		width: 100%;
-	}
+		#contact h3 {
+			color: #F96;
+			display: block;
+			font-size: 20px;
+			font-weight: 400;
+		}
 
-	#contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea {
-		width:100%;
-		border:1px solid #CCC;
-		background:#FFF;
-		margin:0 0 5px;
-		padding:10px;
-	}
+		#contact h4 {
+			margin: 5px 0 15px;
+			display: block;
+			font-size: 13px;
+		}
 
-	#contact input[type="text"]:hover, #contact input[type="email"]:hover, #contact input[type="tel"]:hover, #contact input[type="url"]:hover, #contact textarea:hover {
-		-webkit-transition:border-color 0.3s ease-in-out;
-		-moz-transition:border-color 0.3s ease-in-out;
-		transition:border-color 0.3s ease-in-out;
-		border:1px solid #AAA;
-	}
+		fieldset {
+			border: medium none !important;
+			margin: 0 0 10px;
+			min-width: 100%;
+			padding: 0;
+			width: 100%;
+		}
 
-	#contact button[type="button"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#ffb3b3;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
+		#contact input[type="text"],
+		#contact input[type="email"],
+		#contact input[type="tel"],
+		#contact input[type="url"],
+		#contact textarea {
+			color: #000;
+			font-size: 36px;
+			width: 100%;
+			border: 1px solid #CCC;
+			margin: 0 0 5px;
+			padding: 10px;
+		}
 
-	#contact button[id="button"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#ffff66;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
+		#contact input[type="text"]:hover,
+		#contact input[type="email"]:hover,
+		#contact input[type="tel"]:hover,
+		#contact input[type="url"]:hover,
+		#contact textarea:hover {
+			-webkit-transition: border-color 0.3s ease-in-out;
+			-moz-transition: border-color 0.3s ease-in-out;
+			transition: border-color 0.3s ease-in-out;
+			border: 1px solid #AAA;
+		}
 
-	#contact button[id="delete"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#ff6666;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
-	#contact button[id="logout"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#D0FA58;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
-	#contact button[id="update"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#99ff33;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
-	#contact button[id="back"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#00FF80;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
-	#contact button[id="move"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#58FAF4;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
-	#contact button[id="link"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#99ff33;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
+		#contact button[type="button"] {
+			cursor: pointer;
+			width: 100%;
+			border: none;
+			background: #ffb3b3;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
 
-	#contact input[type="file"] {
-		cursor:pointer;
-		width:100%;
-		border:none;
-		background:#66ff33;
-		color:#000;
-		margin:0 0 5px;
-		padding:10px;
-		font-size:15px;
-	}
+		#contact button[id="button"] {
+			cursor: pointer;
+			width: 100%;
+			border: none;
+			background: #ffff66;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
 
-	#contact a {
-		outline:0;
-		/*border:1px solid #999;*/
-		color:#642EFE;
-		text-align: center;
-		font-size: 1.6em;
-		line-height:1.3em;
-	}
+		#contact button[id="delete"] {
+			cursor: pointer;
+			width: 100%;
+			height: 80px;
+			border: none;
+			background: #ff6666;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
 
-	#contact button[type="button"]:hover {
-		background:#09C;
-		-webkit-transition:background 0.3s ease-in-out;
-		-moz-transition:background 0.3s ease-in-out;
-		transition:background-color 0.3s ease-in-out;
-	}
+		#contact button[id="logout"] {
+			cursor: pointer;
+			width: 100%;
+			border: none;
+			background: #D0FA58;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
 
-	#drop-area {
-		width:100%;
-		height: 200px;
-		border: 2px dashed #ccc;
-		text-align: center;
-		line-height: 200px;
-		font-size: 20px;
-	}
+		#contact button[id="update"] {
+			cursor: pointer;
+			width: 100%;
+			height: 80px;
+			border: none;
+			background: #99ff33;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
 
-	#contact button[type="button"]:active { box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.5); }
+		#contact button[id="back"] {
+			cursor: pointer;
+			width: 100%;
+			border: none;
+			background: #00FF80;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
 
-	#contact input:focus, #contact textarea:focus {
-		outline:0;
-		border:1px solid #999;
-	}
-		</style>
-	</head>
-	<body>
+		#contact button[id="move"] {
+			cursor: pointer;
+			width: 100%;
+			border: none;
+			background: #58FAF4;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
+
+		#contact button[id="link"] {
+			cursor: pointer;
+			width: 100%;
+			border: none;
+			background: #99ff33;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
+
+		#contact input[type="file"] {
+			cursor: pointer;
+			width: 100%;
+			border: none;
+			background: #66ff33;
+			color: #000;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 15px;
+		}
+
+		#contact a {
+			outline: 0;
+			/*border:1px solid #999;*/
+			color: #642EFE;
+			text-align: center;
+			font-size: 1.6em;
+			line-height: 1.3em;
+		}
+
+		#contact button[type="button"]:hover {
+			background: #09C;
+			-webkit-transition: background 0.3s ease-in-out;
+			-moz-transition: background 0.3s ease-in-out;
+			transition: background-color 0.3s ease-in-out;
+		}
+
+		#drop-area {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: #fff;
+			width: 100%;
+			height: 70%;
+			border: 2px dashed #ccc;
+			text-align: center;
+			line-height: 20px;
+			font-size: 40px;
+		}
+
+		#contact button[type="button"]:active {
+			box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+		}
+
+		#contact input:focus,
+		#contact textarea:focus {
+			outline: 0;
+			border: 1px solid #999;
+		}
+
+		.mainbody {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			gap: 20px;
+		}
+
+		.databoard {
+			flex: 1;
+		}
+
+		.showdata {
+			flex: 1;
+		}
+
+		.bg {
+			width: 100%;
+			height: 90vh;
+		}
+
+		.showbtnr {
+			width: 25%;
+			float: right;
+			margin-right: 10px;
+			background: #09C;
+			color: #fff;
+			margin-top: 10px;
+			padding: 10px;
+			font-size: 20px;
+		}
+
+		.showbtnr:hover {
+			background: lightblue;
+			-webkit-transition: background 0.3s ease-in-out;
+			-moz-transition: background 0.3s ease-in-out;
+			transition: background-color 0.3s ease-in-out;
+		}
+
+		#displayImg {
+			width: 100px;
+			height: auto;
+			display: block;
+			margin: 0 auto;
+
+		}
+
+		.showbtn {
+			width: 100%;
+			background: #09C;
+			color: #fff;
+			margin: 0 0 5px;
+			padding: 10px;
+			font-size: 20px;
+
+		}
+
+		.showbtn:hover {
+			background: lightblue;
+			-webkit-transition: background 0.3s ease-in-out;
+			-moz-transition: background 0.3s ease-in-out;
+			transition: background-color 0.3s ease-in-out;
+		}
+
+		.head {
+			display: flex;
+			flex-direction: row;
+		}
+
+		.title {
+			flex: 6;
+			color: white;
+		}
+
+		.showbtn {
+			flex: 1;
+			margin-top: 10px;
+			margin-left: 5px;
+		}
+
+		.ct {
+			position: absolute;
+			width: 32%;
+			height: 90vh;
+		}
+
+		.ipt {
+			height: 80px;
+			color: #000;
+		}
+
+		#div {
+			height: 100%;
+			overflow-y: auto;
+			background-color: rgba(128, 128, 128, 0)
+		}
+
+		/* 修改滚动条的宽度 */
+		#div::-webkit-scrollbar {
+			width: 10px;
+		}
+
+		/* 修改滚动条的轨道颜色 */
+		#div::-webkit-scrollbar-track {
+			background: #f1f1f1;
+		}
+
+		/* 修改滚动条的滑块颜色 */
+		#div::-webkit-scrollbar-thumb {
+			background: #888;
+		}
+
+		/* 当鼠标悬停在滚动条上时，修改滑块的颜色 */
+		#div::-webkit-scrollbar-thumb:hover {
+			background: #555;
+		}
+
+		.placeimg {
+			/* 让图片在父元素下自适应大小 */
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+
+		}
+	</style>
+</head>
+
+<body>
+	<div class="mainbody">
 		<div class="container">
 			<div id="contact">
-				<div id="div">
-					<h2 class="glyphicon glyphicon-cloud" id="head">当前目录文件</h2>
-				</div>
-				<button type="button" id="back" onclick="list();">show_list</button>
-				<input type="text" id="mkdir">
+
+				<input class="ipt" type="text" id="mkdir" placeholder="URL">
 				<button type="button" id="delete" onclick="remove();">delete</button>
 				<button type="button" id="update" onclick="uploadurl();">upload_url</button>
-
 				<!-- <h4 class="glyphicon glyphicon-floppy-disk" >点击按钮选择文件</h4> -->
-				<input type="file" class="file" name="file" id="file"/>
+				<input type="file" class="file" name="file" id="file" />
 				<!-- <button type="button" class="but1" onclick="upload();">upload</button> -->
 				<div id="drop-area">点击,拖入或粘贴上传文件</div>
+
 			</div>
 		</div>
-	</body>
-	<script src="https://unpkg.com/sweetalert2@11"></script>
-	<script charset="utf-8">
-	</script>
-	<script>
-	var way="";
-	var domain="";
-	axios.get("/info").then(function (response){
-		way=JSON.parse(JSON.stringify(response.data))['data']['path']
-		domain=JSON.parse(JSON.stringify(response.data))['data']['domain']
+
+		<div class="databoard">
+			<div class="head">
+				<h2 class="title" id="head">当前目录文件</h2>
+				<button class="showbtn" type="button" id="back" onclick="list();">Show_List</button>
+			</div>
+			<div class="ct">
+				<div id="div"></div>
+			</div>
+
+		</div>
+
+		<div class="showdata">
+			<div class="bg">
+				<div>
+					<button class="showbtnr" type="button" id="link"
+						onclick="window.open(imageUrl, '_blank');">OPEN=></button>
+				</div>
+				<img id="image-display" class="placeimg" src="" alt="预览图片" />
+			</div>
+		</div>
+</body>
+<script src="https://unpkg.com/sweetalert2@11"></script>
+<script charset="utf-8">
+</script>
+<script>
+	let imageUrl = "";
+	let lurl = "";
+	let lists = [];
+	var way = "";
+	var domain = "";
+	axios.get("/info").then(function (response) {
+		way = JSON.parse(JSON.stringify(response.data))['data']['path']
+		domain = JSON.parse(JSON.stringify(response.data))['data']['domain']
 		var div = document.getElementById("head");
-		div.innerText=div.innerText+" /"+way
+		div.innerText = div.innerText + " /" + way
 	});
-	function list(){
-		if(document.getElementById("div").children.length > 1){
-			var parent=document.getElementById("div")
-			while (parent.lastChild&&parent.children.length>1) {
+	function list() {
+		if (document.getElementById("div").children.length >= 1) {
+			document.getElementById('div').style.background = 'rgba(128, 128, 128, 0)';
+			var parent = document.getElementById("div")
+			while (parent.lastChild && parent.children.length > 0) {
 				parent.removeChild(parent.lastChild);
 			}
 			return;
 		}
+
 		axios.post("/list", {
-			path:way
+			path: way
 		}).then(function (response) {
-			var arr=JSON.parse(JSON.stringify(response.data))['data']['list'];
+			var arr = JSON.parse(JSON.stringify(response.data))['data']['list'];
+			lists = arr
 			var div = document.getElementById("div");
-			for(var i in arr)
-			{
-				if(arr[i].indexOf("link")!=-1)
+			document.getElementById('div').style.background = 'rgba(128, 128, 128, 0.5)';
+			for (var i in arr) {
+				if (arr[i].indexOf("link") != -1)
 					continue;
-				var linkTmp = document.createElement("a");
-				linkTmp.innerText=" "+arr[i];
-				linkTmp.href =domain+"/"+way+"/"+arr[i];
-				console.log(arr[i]);
-				if(window.location.pathname.indexOf("link")==-1&&arr[i].indexOf(".")==-1){
-					linkTmp.className="glyphicon glyphicon-folder-open";
-				}else{
-					linkTmp.className="glyphicon glyphicon-file";
-					linkTmp.download=arr[i];
+				var linkTmp = document.createElement("p");
+				linkTmp.innerText = " " + arr[i];
+				linkTmp.href = domain + "/" + way + "/" + arr[i];
+				linkTmp.target = "_blank";
+
+				if (window.location.pathname.indexOf("a") == -1 && arr[i].indexOf(".") == -1) {
+					linkTmp.className = "glyphicon glyphicon-folder-open";
+				} else {
+					linkTmp.className = "glyphicon glyphicon-file";
+					linkTmp.download = arr[i];
 				}
+				linkTmp.style.fontSize = "16px";
+				linkTmp.style.color = "rgba(0, 153, 204)";
+				linkTmp.style.cursor = "pointer"; // 设置鼠标样式为手型，表示可点击
+
+				linkTmp.addEventListener("click", function (index) {
+					return function () {
+						// 点击事件处理函数
+						showImage(index);
+					};
+				}(i)); // 使用闭包保存当前索引值
+
 				div.appendChild(linkTmp);
 				div.appendChild(document.createElement("br"));
+
 			}
 		}).catch(error => {
 			if (error.response.status === 400) {
@@ -301,165 +500,193 @@
 			}
 		});
 	}
-	</script>
-	<script>
-		// 拖入文件配置
-		var dropArea = document.getElementById('drop-area');
-
-		dropArea.addEventListener('dragover', function(e) {
-			e.preventDefault();
-			dropArea.style.borderColor = 'blue';
-		});
-
-		dropArea.addEventListener('dragleave', function() {
-			dropArea.style.borderColor = '#ccc';
-		});
-
-		dropArea.addEventListener('drop', function(e) {
-			e.preventDefault();
-			dropArea.style.borderColor = '#ccc';
-
-			var files = e.dataTransfer.files;
-			if (files.length > 0) {
-				var file = files[0];
-				dropArea.innerText=file.name+"上传中";
-				uploadFile(file)
-				dropArea.innerText="点击,拖入或粘贴上传文件";
+	function throttle(func, wait) {
+		let timeout = null;
+		let firstTime = true
+		return function () {
+			if (firstTime) {
+				func.apply(this, arguments);
+				firstTime = false;
+				return
 			}
-		});
-
-		document.addEventListener('paste', function(e) {
-			var items = e.clipboardData.items;
-
-			for (var i = 0; i < items.length; i++) {
-				if (items[i].kind === 'file' && items[i].type.indexOf('image') !== -1) {
-					var file = items[i].getAsFile();
-					var newFilename = "pasteboard.paste"; // 设置新文件名
-					var newFile = new File([file], newFilename, {type: file.type}); // 创建新File对象
-					dropArea.innerHTML = newFile.name+"上传中";
-					uploadFile(newFile)
-					dropArea.innerText="点击,拖入或粘贴上传文件";
-					break;
-				}
+			if (timeout) {
+				return;
 			}
-		});
+			timeout = setTimeout(() => func.apply(this, arguments), wait);
 
-		var fileInput = document.getElementById('file');
-		fileInput.addEventListener('change', function(e) {
-			var file = e.target.files[0];
-			dropArea.innerText=file.name+"上传中";
+		}
+	}
+
+	function showImage(index) {
+		imageUrl = domain + "/" + way + "/" + lists[index];
+		lurl = lists[index];
+		document.getElementById('mkdir').value = lurl;
+		document.getElementById('image-display').src = imageUrl;
+		// console.log("点击的图片索引为：" + lists[index]);
+		// console.log("图片地址为：" + imageUrl);
+		// 在指定区域展示图片的逻辑...
+		const throttleSetBackgroundImage = throttle(function () {
+			document.body.style.backgroundImage = 'url(' + imageUrl + ')';
+		}, 300);
+
+		throttleSetBackgroundImage();
+	}
+</script>
+<script>
+	// 拖入文件配置
+	var dropArea = document.getElementById('drop-area');
+
+	dropArea.addEventListener('dragover', function (e) {
+		e.preventDefault();
+		dropArea.style.borderColor = 'blue';
+	});
+
+	dropArea.addEventListener('dragleave', function () {
+		dropArea.style.borderColor = '#ccc';
+	});
+
+	dropArea.addEventListener('drop', function (e) {
+		e.preventDefault();
+		dropArea.style.borderColor = '#ccc';
+
+		var files = e.dataTransfer.files;
+		if (files.length > 0) {
+			var file = files[0];
+			dropArea.innerText = file.name + "上传中";
 			uploadFile(file)
-			dropArea.innerText="点击,拖入或粘贴上传文件";
-		});
-		dropArea.addEventListener('click', function() {
-			fileInput.click();
-		});
-	</script>
-	<script>
-		function remove()
-		{
-			var sen=document.getElementById("mkdir");
-			if(sen.value.length==0)
-			{
-				alert("please choose file");
-				return;
-			}
-			var url=window.location.pathname+"/"+sen.value;
-			console.log(url);
-			axios.post("/delete", {
-				path:way+"/"+sen.value
-			}).then(function (response) {
-				// 到这里表示返回200一定成功
-				alert("Operator Success");
-				location.reload();
-				sen.value="";
-			}).catch(error => {
-				if (error.response.status === 400) {
-					console.log('发生了400错误：', error.response.data);
-					alert(error.response.data.data);
-				} else {
-					console.error('请求出错：', error.message);
-					alert("请求出错");
-				}
-			});
+			dropArea.innerText = "点击,拖入或粘贴上传文件";
 		}
-		function update()
-		{
+	});
+
+	document.addEventListener('paste', function (e) {
+		var items = e.clipboardData.items;
+
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].kind === 'file' && items[i].type.indexOf('image') !== -1) {
+				var file = items[i].getAsFile();
+				var newFilename = "pasteboard.paste"; // 设置新文件名
+				var newFile = new File([file], newFilename, { type: file.type }); // 创建新File对象
+				dropArea.innerHTML = newFile.name + "上传中";
+				uploadFile(newFile)
+				dropArea.innerText = "点击,拖入或粘贴上传文件";
+				break;
+			}
+		}
+	});
+
+	var fileInput = document.getElementById('file');
+	fileInput.addEventListener('change', function (e) {
+		var file = e.target.files[0];
+		dropArea.innerText = file.name + "上传中";
+		uploadFile(file)
+		dropArea.innerText = "点击,拖入或粘贴上传文件";
+	});
+	dropArea.addEventListener('click', function () {
+		fileInput.click();
+	});
+</script>
+<script>
+	function remove() {
+		var sen = document.getElementById("mkdir");
+		if (sen.value.length == 0) {
+			alert("please choose file");
+			return;
+		}
+		var url = window.location.pathname + "/" + sen.value;
+		console.log(url);
+		axios.post("/delete", {
+			path: way + "/" + sen.value
+		}).then(function (response) {
+			// 到这里表示返回200一定成功
+			alert("Operator Success");
 			location.reload();
-		}
-		function back()
-		{
-			window.history.back(-1);
-		}
-		function uploadurl(){
-			var sen=document.getElementById("mkdir");
-			if(sen.value.length==0){
-				alert("please choose file");
-				return;
+			sen.value = "";
+		}).catch(error => {
+			if (error.response.status === 400) {
+				console.log('发生了400错误：', error.response.data);
+				alert(error.response.data.data);
+			} else {
+				console.error('请求出错：', error.message);
+				alert("请求出错");
 			}
-			axios.post("/upload_url",{
-				path:sen.value
-			}).then(function (response) {
-				// 到这里表示返回200一定成功
-				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
-				uploadResultDeal(data);
-			}).catch(error => {
-				if (error.response.status === 400) {
-					console.log('发生了400错误：', error.response.data);
-					alert(error.response.data.data);
-				} else {
-					console.error('请求出错：', error.message);
-					alert("请求出错");
-				}
-			});
+		});
+	}
+	function update() {
+		location.reload();
+	}
+	function back() {
+		window.history.back(-1);
+	}
+	function uploadurl() {
+		var sen = document.getElementById("mkdir");
+		if (sen.value.length == 0) {
+			alert("please choose file");
+			return;
 		}
-		function uploadFile(file){
-			let formData = new FormData();
-			formData.append("file",file,file.name);
+		axios.post("/upload_url", {
+			path: sen.value
+		}).then(function (response) {
+			// 到这里表示返回200一定成功
+			var data = JSON.parse(JSON.stringify(response.data))['data']['url'];
+			uploadResultDeal(data);
+		}).catch(error => {
+			if (error.response.status === 400) {
+				console.log('发生了400错误：', error.response.data);
+				alert(error.response.data.data);
+			} else {
+				console.error('请求出错：', error.message);
+				alert("请求出错");
+			}
+		});
+	}
+	function uploadFile(file) {
+		let formData = new FormData();
+		formData.append("file", file, file.name);
 
-			const config = {
-				headers: { "Content-Type": "multipart/form-data;boundary="+new Date().getTime() }
-			};
+		const config = {
+			headers: { "Content-Type": "multipart/form-data;boundary=" + new Date().getTime() }
+		};
 
-			axios.post("/upload",formData,config).then(function (response) {
-				var data=JSON.parse(JSON.stringify(response.data))['data']['url'];
-				alert(data);
-				uploadResultDeal(data);
-			}).catch(function (error) {
-				if (error.response.status === 400) {
-					console.log('发生了400错误：', error.response.data);
-					alert(error.response.data.data);
-				} else {
-					console.error('请求出错：', error.message);
-					alert("请求出错");
-				}
-			});
-		}
-		function uploadResultDeal(data){
-			console.log(data);
-			var parts = data.split('/');
-			var lastPart = parts[parts.length - 1];
-			var input = document.getElementById("mkdir");
-			console.log(lastPart);
-			input.value=lastPart;
-			let ret=setClipboard(data);
-		}
-		function setClipboard(textToCopy){
-			navigator.clipboard.writeText(textToCopy)
-				.then(() => {
-					Swal.fire({
-							  title: '链接(已复制到粘贴板)',
-							  text: textToCopy,
-							  icon: 'info',
-							  showConfirmButton: false,
-							  timer: 2000
-					});
-				})
-				.catch((error) => {
-					console.error('写入剪贴板时出错：', error);
-					alert(textToCopy);
-					ret=error;
+		axios.post("/upload", formData, config).then(function (response) {
+			var data = JSON.parse(JSON.stringify(response.data))['data']['url'];
+			alert(data);
+			uploadResultDeal(data);
+		}).catch(function (error) {
+			if (error.response.status === 400) {
+				console.log('发生了400错误：', error.response.data);
+				alert(error.response.data.data);
+			} else {
+				console.error('请求出错：', error.message);
+				alert("请求出错");
+			}
+		});
+	}
+	function uploadResultDeal(data) {
+		console.log(data);
+		var parts = data.split('/');
+		var lastPart = parts[parts.length - 1];
+		var input = document.getElementById("mkdir");
+		console.log(lastPart);
+		input.value = lastPart;
+		let ret = setClipboard(data);
+	}
+	function setClipboard(textToCopy) {
+		navigator.clipboard.writeText(textToCopy)
+			.then(() => {
+				Swal.fire({
+					title: '链接(已复制到粘贴板)',
+					text: textToCopy,
+					icon: 'info',
+					showConfirmButton: false,
+					timer: 2000
 				});
-		}
-	</script>
+			})
+			.catch((error) => {
+				console.error('写入剪贴板时出错：', error);
+				alert(textToCopy);
+				ret = error;
+			});
+	}
+</script>
+
 </html>
