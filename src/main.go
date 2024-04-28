@@ -7,6 +7,7 @@ import (
 
 	"github.com/chenxuan520/qiniuserver/config"
 	"github.com/chenxuan520/qiniuserver/controller"
+	"github.com/chenxuan520/qiniuserver/middlerware"
 	"github.com/chenxuan520/qiniuserver/utils"
 )
 
@@ -23,13 +24,17 @@ func main() {
 	r.Static("/static", "./assert/")
 	r.StaticFile("/", "./assert/index.html")
 
-	r.GET("/info", controller.GetInfo)
-	r.POST("/upload", controller.UploadFile)
-	r.POST("/upload_url", controller.UploadByUrl)
-	r.POST("/list", controller.GetFileList)
-	r.POST("/delete", controller.DeleteFile)
-	// this api for test
-	r.POST("/upload_test", controller.UploadTest)
+	api := r.Group("/api")
+	api.Use(middlerware.PasswdAuth())
+	{
+		api.GET("/info", controller.GetInfo)
+		api.POST("/upload", controller.UploadFile)
+		api.POST("/upload_url", controller.UploadByUrl)
+		api.POST("/list", controller.GetFileList)
+		api.POST("/delete", controller.DeleteFile)
+		// this api for test
+		api.POST("/upload_test", controller.UploadTest)
+	}
 
 	log.Println("Runner in http://" + config.GlobalConfig.Host.Ip + ":" + config.GlobalConfig.Host.Port)
 	r.Run(config.GlobalConfig.Host.Ip + ":" + config.GlobalConfig.Host.Port)

@@ -43,8 +43,8 @@ func UploadByUrl(g *gin.Context) {
 		return
 	}
 
-	url := path.Path
 	// 发起 GET 请求
+	url := path.Path
 	response, err := http.Get(url)
 	if err != nil {
 		res.Error(g, http.StatusBadRequest, err.Error())
@@ -87,7 +87,7 @@ func UploadByUrl(g *gin.Context) {
 }
 
 func UploadFile(g *gin.Context) {
-	//TODO add it to config
+	// 直接写定在文件中
 	header, err := g.FormFile("file")
 	if err != nil {
 		res.Error(g, http.StatusBadRequest, err.Error())

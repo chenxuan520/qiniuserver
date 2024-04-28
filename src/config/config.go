@@ -18,8 +18,9 @@ type Qiniu struct {
 }
 
 type Host struct {
-	Ip   string `json:"ip"`
-	Port string `json:"port"`
+	Ip       string `json:"ip"`
+	Port     string `json:"port"`
+	Password string `json:"password"`
 }
 
 type Config struct {
