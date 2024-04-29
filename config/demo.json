@@ -1,7 +1,8 @@
 {
 	"host":{
 		"ip":"127.0.0.1",
-		"port":"5200"
+		"port":"5200",
+		"password":"demo"
 	},
 	"qiniu":{
 		"domain":"demo",

@@ -8,11 +8,15 @@
 
 - 支持粘贴,拖入,选择文件上传
 
+## 效果
+
+![demo](http://cdn.androidftp.top/test/202404429163058pasteboard.paste)
+
 ## 获取方法
 
 1. 直接通过release版本下载
 
-2. 下载源码编译
+2. 下载源码编译(`go build ..`)
 
 3. 使用docker
 
@@ -29,7 +33,8 @@
 {
 	"host":{
 		"ip":"127.0.0.1", // 绑定ip
-		"port":"5200" // 绑定端口
+		"port":"5200", // 绑定端口
+		"password": "123" // 设置登录密码,如果为空意味着无需密码
 	},
 	"qiniu":{
 		"domain":"demo", // cdn的域名

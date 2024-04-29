@@ -155,7 +155,7 @@
 			color: #000;
 			margin: 0 0 5px;
 			padding: 10px;
-			font-size: 15px;
+			font-size: 20px;
 		}
 
 		#contact button[id="logout"] {
@@ -178,7 +178,7 @@
 			color: #000;
 			margin: 0 0 5px;
 			padding: 10px;
-			font-size: 15px;
+			font-size: 20px;
 		}
 
 		#contact button[id="back"] {
@@ -290,8 +290,8 @@
 			width: 25%;
 			float: right;
 			margin-right: 10px;
-			background: #09C;
-			color: #fff;
+			background: #00FF80;
+			color: #000;
 			margin-top: 10px;
 			padding: 10px;
 			font-size: 20px;
@@ -314,8 +314,8 @@
 
 		.showbtn {
 			width: 100%;
-			background: #09C;
-			color: #fff;
+			background: #ffb3b3;
+			color: #000;
 			margin: 0 0 5px;
 			padding: 10px;
 			font-size: 20px;
@@ -398,8 +398,8 @@
 			<div id="contact">
 
 				<input class="ipt" type="text" id="mkdir" placeholder="URL">
-				<button type="button" id="delete" onclick="remove();">delete</button>
-				<button type="button" id="update" onclick="uploadurl();">upload_url</button>
+				<button type="button" id="delete" onclick="remove();">Delete</button>
+				<button type="button" id="update" onclick="uploadurl();">UploadUrl</button>
 				<!-- <h4 class="glyphicon glyphicon-floppy-disk" >点击按钮选择文件</h4> -->
 				<input type="file" class="file" name="file" id="file" />
 				<!-- <button type="button" class="but1" onclick="upload();">upload</button> -->
@@ -411,7 +411,7 @@
 		<div class="databoard">
 			<div class="head">
 				<h2 class="title" id="head">当前目录文件</h2>
-				<button class="showbtn" type="button" id="back" onclick="list();">Show_List</button>
+				<button class="showbtn" type="button" id="back" onclick="list();">ShowList</button>
 			</div>
 			<div class="ct">
 				<div id="div"></div>
@@ -445,6 +445,7 @@
 		domain = JSON.parse(JSON.stringify(response.data))['data']['domain']
 		var div = document.getElementById("head");
 		div.innerText = div.innerText + " /" + way
+		document.getElementById('mkdir').value = "登录成功";
 	}).catch(error => {
 		if (error.response.status === 401) {
 			password = prompt("请输入密码");
@@ -454,10 +455,19 @@
 				domain = JSON.parse(JSON.stringify(response.data))['data']['domain']
 				var div = document.getElementById("head");
 				div.innerText = div.innerText + " /" + way
+				document.getElementById('mkdir').value = "登录成功";
+			}).catch(error => {
+				if(error.response.status===401){
+					alert("密码错误,请刷新页面再次输入");
+					location.reload();
+				}else{
+					console.error('请求出错：', error.message);
+					errorMsg("请求出错","请求出错");
+				}
 			})
 		} else {
 			console.error('请求出错：', error.message);
-			alert("请求出错");
+			errorMsg("请求出错","请求出错");
 		}
 	})
 
@@ -492,7 +502,7 @@
 					linkTmp.className = "glyphicon glyphicon-file";
 					linkTmp.download = arr[i];
 				}
-				linkTmp.style.fontSize = "16px";
+				linkTmp.style.fontSize = "25px";
 				linkTmp.style.color = "rgba(0, 153, 204)";
 				linkTmp.style.cursor = "pointer"; // 设置鼠标样式为手型，表示可点击
 
@@ -615,16 +625,19 @@
 			path: way + "/" + sen.value
 		}).then(function (response) {
 			// 到这里表示返回200一定成功
-			alert("Operator Success");
-			location.reload();
+			successMsg("删除成功",url+" 删除成功");
+			// 刷新列表,非常丑陋 TODO
+			list();
+			list();
+
 			sen.value = "";
 		}).catch(error => {
 			if (error.response.status === 400) {
 				console.log('发生了400错误：', error.response.data);
-				alert(error.response.data.data);
+				errorMsg("删除失败",error.response.data.data);
 			} else {
 				console.error('请求出错：', error.message);
-				alert("请求出错");
+				errorMsg("请求出错","请求出错");
 			}
 		});
 	}
@@ -649,10 +662,10 @@
 		}).catch(error => {
 			if (error.response.status === 400) {
 				console.log('发生了400错误：', error.response.data);
-				alert(error.response.data.data);
+				errorMsg("删除失败",error.response.data.data);
 			} else {
 				console.error('请求出错：', error.message);
-				alert("请求出错");
+				errorMsg("请求出错","请求出错");
 			}
 		});
 	}
@@ -664,17 +677,18 @@
 			headers: { "Content-Type": "multipart/form-data;boundary=" + new Date().getTime() }
 		};
 
-		axios.post("/api/upload", formData, config).then(function (response) {
+		const uploadUrl = "/api/upload";// 如果测试是 /api/upload_test
+		axios.post(uploadUrl, formData, config).then(function (response) {
 			var data = JSON.parse(JSON.stringify(response.data))['data']['url'];
 			alert(data);
 			uploadResultDeal(data);
 		}).catch(function (error) {
 			if (error.response.status === 400) {
 				console.log('发生了400错误：', error.response.data);
-				alert(error.response.data.data);
+				errorMsg("删除失败",error.response.data.data);
 			} else {
 				console.error('请求出错：', error.message);
-				alert("请求出错");
+				errorMsg("请求出错","请求出错");
 			}
 		});
 	}
@@ -700,9 +714,45 @@
 			})
 			.catch((error) => {
 				console.error('写入剪贴板时出错：', error);
-				alert(textToCopy);
+				alert("写入粘贴板错误,原始链接:"+" "+textToCopy);
 				ret = error;
 			});
+	}
+	function successMsg(show_title,show_text){
+		Swal.fire({
+				  title: show_title,
+				  text: show_text,
+				  icon: 'success',
+				  showConfirmButton: false,
+				  timer: 2000
+		});
+	}
+	function infoMsg(show_title,show_text){
+		Swal.fire({
+				  title: show_title,
+				  text: show_text,
+				  icon: 'info',
+				  showConfirmButton: false,
+				  timer: 2000
+		});
+	}
+	function warningMsg(show_title,show_text){
+		Swal.fire({
+				  title: show_title,
+				  text: show_text,
+				  icon: 'warning',
+				  showConfirmButton: false,
+				  timer: 2000
+		});
+	}
+	function errorMsg(show_title,show_text){
+		Swal.fire({
+				  title: show_title,
+				  text: show_text,
+				  icon: 'error',
+				  showConfirmButton: false,
+				  timer: 2000
+		});
 	}
 </script>
 
