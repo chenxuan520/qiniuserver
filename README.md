@@ -16,7 +16,7 @@
 
 1. 直接通过release版本下载
 
-2. 下载源码编译(`go build ..`)
+2. 下载源码编译(`./build.sh`)
 
 3. 使用docker
 
@@ -27,6 +27,18 @@
 2. 运行qiniuserver
 
 3. 打开浏览器
+
+## 参数获取
+
+- [access_key 和 secret_key 获取](https://portal.qiniu.com/developer/user/key)
+
+- [bucket 的获取](https://portal.qiniu.com/kodo/bucket)
+
+- [zone 的获取,取值为Huanan,Huabei,Huadong,Xingjiapo](https://portal.qiniu.com/kodo/bucket)
+
+- upload_path 和 file_name 是自定义的
+
+- [Api 文档](https://developer.qiniu.com/kodo/sdk/go-v6)
 
 ## 参数说明
 ```
