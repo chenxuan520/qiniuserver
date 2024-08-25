@@ -1,0 +1,36 @@
+name: build_and_release #名称随意
+on:
+  push: #设置触发规则
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code #这部分是为了从github自动clone代码
+        uses: actions/checkout@v4
+      - name: Go env prepare
+        uses: actions/setup-go@v5
+        with:
+          go-version: '^1.20'
+          check-latest: true
+      - name: Install build tools #这部分是安装依赖,不过看着办的
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl
+      - name: Run test #需要执行的命令
+        run: |
+          ./build.sh
+          curl https://raw.githubusercontent.com/chenxuan520/gh-action-shell/main/git_commit_message_from_last_tag.sh | bash 1>commit-message.log 2>/dev/null
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: commit-message.log
+          files: |
+            qiniuserver
+            LICENSE
