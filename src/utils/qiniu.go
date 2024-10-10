@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/qiniu/go-sdk/v7/auth"
 	"github.com/qiniu/go-sdk/v7/storage"
@@ -89,6 +90,12 @@ func GetDirList(dir string) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		// sort by update time
+		sort.Slice(entries, func(i, j int) bool {
+			return entries[i].PutTime > entries[j].PutTime
+		})
+
 		for _, entry := range entries {
 			if len(entry.Key) <= len(prefix) {
 				continue

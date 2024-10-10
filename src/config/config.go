@@ -1,8 +1,8 @@
 package config
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/json-iterator/go"
 )
@@ -34,12 +34,12 @@ var (
 
 func Init() {
 	configFile := "./config/config.json"
-	data, err := ioutil.ReadFile(configFile)
+	data, err := os.ReadFile(configFile)
 
 	if err != nil {
 		log.Println(err)
 		configFile = "config.json"
-		data, err = ioutil.ReadFile("/config/" + configFile)
+		data, err = os.ReadFile("/config/" + configFile)
 		if err != nil {
 			log.Println("Read config error!")
 			log.Panic(err)
