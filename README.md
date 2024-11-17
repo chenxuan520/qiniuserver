@@ -12,21 +12,29 @@
 
 ![demo](http://cdn.androidftp.top/test/202404429163058pasteboard.paste)
 
-## 获取方法
+## Quick Start
 
-1. 直接通过release版本下载
+### 直接通过release版本下载
 
-2. 下载源码编译(`./build.sh`)
+1. release 下载对应[操作系统版本](https://github.com/chenxuan520/qiniuserver/releases/)
 
-3. 使用docker
+2. 下载对应版本,解压,修改config文件夹内的demo.json(主要是添加七牛云参数)并重新命名为config.json
 
-## 使用方法
+3. 运行qiniuserver
 
-1. 修改config文件夹内的demo.json(主要是添加七牛云参数)并重新命名为config.json
+4. 打开浏览器
 
-2. 运行qiniuserver
+### 下载源码编译
 
-3. 打开浏览器
+1. 运行 `git clone https://github.com/chenxuan520/qiniuserver`
+
+2. 运行 `cd src;go build .;mv ./qiniuserver ..;cd ..`
+
+3. 修改config文件夹内的demo.json(主要是添加七牛云参数)并重新命名为config.json
+
+4. 运行 qiniuserver
+
+5. 打开浏览器
 
 ## 参数获取
 
