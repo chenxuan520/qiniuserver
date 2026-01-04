@@ -38,6 +38,7 @@
             background-image: none;
             background-repeat: no-repeat;
             background-size: cover;
+            overflow: hidden; /* 防止背景图片过大导致滚动条出现 */
         }
 
         .container {
@@ -629,7 +630,7 @@
         lurl = fileInfo.key;
         document.getElementById('mkdir').value = lurl;
         document.getElementById('image-display').src = imageUrl;
-        
+
         // console.log("点击的图片索引为：" + lists[index]);
         // console.log("图片地址为：" + imageUrl);
         // 在指定区域展示图片的逻辑...
@@ -640,6 +641,10 @@
 
         const throttleSetBackgroundImage = throttle(function () {
             document.body.style.backgroundImage = 'url(' + imageUrl + ')';
+            document.body.style.backgroundSize = 'cover';  /* 确保背景图片覆盖整个容器并保持比例，必要时进行裁剪 */
+            document.body.style.backgroundPosition = 'center center';  /* 居中显示背景图片 */
+            document.body.style.backgroundRepeat = 'no-repeat';  /* 防止背景图片重复 */
+            document.body.style.backgroundAttachment = 'fixed';  /* 固定背景，防止滚动时移动 */
         }, 300);
 
         throttleSetBackgroundImage();
