@@ -79,15 +79,20 @@ func UploadFromPath(key, filepath string) error {
 	return nil
 }
 
-func GetDirList(dir string) ([]string, error) {
+func GetDirList(dir string) ([]storage.ListItem, error) {
 	limit := 1000
-	prefix := dir + "/"
+	prefix := dir
+	if len(dir) > 0 {
+		prefix = dir + "/"
+	}
 	//初始列举marker为空
 	marker := ""
-	result := []string{}
+	var result []storage.ListItem
+	result = make([]storage.ListItem, 0)
 	for {
 		entries, _, nextMarker, hasNext, err := manager.ListFiles(bucket, prefix, "", marker, limit)
 		if err != nil {
+			fmt.Printf("Error from manager.ListFiles for prefix '%s': %v\n", prefix, err)
 			return nil, err
 		}
 
@@ -96,16 +101,19 @@ func GetDirList(dir string) ([]string, error) {
 			return entries[i].PutTime > entries[j].PutTime
 		})
 
-		for _, entry := range entries {
-			if len(entry.Key) <= len(prefix) {
+		for i := range entries {
+			if len(entries[i].Key) <= len(prefix) {
 				continue
 			}
-			key := entry.Key[len(prefix):]
-			result = append(result, key)
+			// Remove the prefix from the key, but keep the rest of the struct intact
+			entries[i].Key = entries[i].Key[len(prefix):]
+			result = append(result, entries[i])
 		}
+
 		if hasNext {
 			marker = nextMarker
 		} else {
+			// no more items
 			break
 		}
 	}

@@ -390,6 +390,29 @@
 
         }
 
+        #file-info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+        #file-info-panel h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #99ff33;
+        }
+        #file-info-panel p {
+            margin: 5px 0;
+        }
+
     </style>
 </head>
 
@@ -427,6 +450,12 @@
                         onclick="window.open(imageUrl, '_blank');">OPEN=></button>
                 </div>
                 <img id="image-display" class="placeimg" src="" alt="预览图片" />
+                <div id="file-info-panel" style="display: none;">
+                    <h4>文件信息</h4>
+                    <p><strong>文件名:</strong> <span id="info-filename"></span></p>
+                    <p><strong>文件大小:</strong> <span id="info-filesize"></span></p>
+                    <p><strong>创建时间:</strong> <span id="info-createtime"></span></p>
+                </div>
             </div>
         </div>
 </body>
@@ -505,22 +534,25 @@
             path: way
         }).then(function (response) {
             var arr = JSON.parse(JSON.stringify(response.data))['data']['list'];
+            if (arr == null) {
+                arr = [];
+            }
             lists = arr
             var div = document.getElementById("div");
             document.getElementById('div').style.background = 'rgba(128, 128, 128, 0.5)';
             for (var i in arr) {
-                if (arr[i].indexOf("link") != -1)
+                if (arr[i].key.indexOf("link") != -1)
                     continue;
                 var linkTmp = document.createElement("p");
-                linkTmp.innerText = " " + arr[i];
-                linkTmp.href = domain + "/" + way + "/" + arr[i];
+                linkTmp.innerText = " " + arr[i].key;
+                linkTmp.href = domain + "/" + way + "/" + arr[i].key;
                 linkTmp.target = "_blank";
 
-                if (window.location.pathname.indexOf("a") == -1 && arr[i].indexOf(".") == -1) {
+                if (window.location.pathname.indexOf("a") == -1 && arr[i].key.indexOf(".") == -1) {
                     linkTmp.className = "glyphicon glyphicon-folder-open";
                 } else {
                     linkTmp.className = "glyphicon glyphicon-file";
-                    linkTmp.download = arr[i];
+                    linkTmp.download = arr[i].key;
                 }
                 linkTmp.style.fontSize = "25px";
                 linkTmp.style.color = "rgba(0, 153, 204)";
@@ -538,11 +570,11 @@
 
             }
         }).catch(error => {
-            if (error.response.status === 400) {
+            if (error.response && error.response.status === 400) {
                 console.log('发生了400错误：', error.response.data);
                 alert(error.response.data.data);
             } else {
-                console.error('请求出错：', error.message);
+                console.error('请求出错：', error);
                 alert("请求出错");
             }
         });
@@ -564,14 +596,48 @@
         }
     }
 
+    function formatBytes(bytes, decimals = 2) {
+        if (!bytes || bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+    function formatQiniuTime(putTime) {
+        if (!putTime) return 'N/A';
+        // Qiniu's putTime is in 100-nanosecond intervals.
+        // Convert to milliseconds for JavaScript Date object.
+        const timestamp = putTime / 10000;
+        const date = new Date(timestamp);
+        // Format to YYYY-MM-DD HH:mm:ss
+        const Y = date.getFullYear() + '-';
+        const M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        const D = (date.getDate() < 10 ? '0'+date.getDate() : date.getDate()) + ' ';
+        const h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours()) + ':';
+        const m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
+        const s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+        return Y+M+D+h+m+s;
+    }
+
     function showImage(index) {
-        imageUrl = domain + "/" + way + "/" + lists[index];
-        lurl = lists[index];
+        const fileInfo = lists[index];
+        if (!fileInfo) return;
+
+        imageUrl = domain + "/" + way + "/" + fileInfo.key;
+        lurl = fileInfo.key;
         document.getElementById('mkdir').value = lurl;
         document.getElementById('image-display').src = imageUrl;
+        
         // console.log("点击的图片索引为：" + lists[index]);
         // console.log("图片地址为：" + imageUrl);
         // 在指定区域展示图片的逻辑...
+        document.getElementById('info-filename').innerText = fileInfo.key;
+        document.getElementById('info-filesize').innerText = formatBytes(fileInfo.fsize);
+        document.getElementById('info-createtime').innerText = formatQiniuTime(fileInfo.putTime);
+        document.getElementById('file-info-panel').style.display = 'block';
+
         const throttleSetBackgroundImage = throttle(function () {
             document.body.style.backgroundImage = 'url(' + imageUrl + ')';
         }, 300);
