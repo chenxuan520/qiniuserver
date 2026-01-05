@@ -134,6 +134,7 @@
             margin: 0 0 5px;
             padding: 10px;
             font-size: 15px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         #contact button[id="button"] {
@@ -145,6 +146,7 @@
             margin: 0 0 5px;
             padding: 10px;
             font-size: 15px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         #contact button[id="delete"] {
@@ -157,6 +159,7 @@
             margin: 0 0 5px;
             padding: 10px;
             font-size: 20px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         #contact button[id="logout"] {
@@ -168,6 +171,7 @@
             margin: 0 0 5px;
             padding: 10px;
             font-size: 15px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         #contact button[id="update"] {
@@ -180,6 +184,7 @@
             margin: 0 0 5px;
             padding: 10px;
             font-size: 20px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         #contact button[id="back"] {
@@ -191,6 +196,7 @@
             margin: 0 0 5px;
             padding: 10px;
             font-size: 15px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         #contact button[id="move"] {
@@ -202,17 +208,20 @@
             margin: 0 0 5px;
             padding: 10px;
             font-size: 15px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         #contact button[id="link"] {
             cursor: pointer;
             width: 100%;
             border: none;
-            background: #99ff33;
-            color: #000;
-            margin: 0 0 5px;
-            padding: 10px;
+            background: #74c0fc;
+            color: #fff;
+            margin: 0 0 8px;
+            padding: 12px;
             font-size: 15px;
+            border-radius: 10px;
+            box-shadow: 0 6px 14px rgba(116,192,252,.28);
         }
 
         #contact input[type="file"] {
@@ -235,11 +244,34 @@
             line-height: 1.3em;
         }
 
+        /* 保持原始列表项样式，不额外添加间距或宽度规则 */
+
         #contact button[type="button"]:hover {
             background: #09C;
             -webkit-transition: background 0.3s ease-in-out;
             -moz-transition: background 0.3s ease-in-out;
             transition: background-color 0.3s ease-in-out;
+        }
+
+        /* 现代化按钮增强，仅视觉优化，不改变原有尺寸与配色 */
+        .button-modern {
+            border-radius: 10px; /* 更圆润 */
+            border: 1px solid rgba(0,0,0,0.08);
+            background-image: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+        }
+        .button-modern:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 18px rgba(0,0,0,0.16);
+        }
+        .button-modern:active {
+            transform: translateY(0);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
+        }
+        .button-modern:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,153,204,0.25), 0 6px 14px rgba(0,0,0,0.12);
         }
 
         #drop-area {
@@ -296,6 +328,7 @@
             margin-top: 10px;
             padding: 10px;
             font-size: 20px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         .showbtnr:hover {
@@ -309,19 +342,39 @@
             width: 25%;
             float: right;
             margin-right: 10px;
-            background: #99ff33;
-            color: #000;
+            background: #339af0; /* 与 OPEN 区分的蓝色 */
+            color: #fff;
             margin-top: 10px;
             padding: 10px;
             font-size: 20px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
         .showbtnl:hover {
-            background: lightblue;
+            background: #1e7af5;
             -webkit-transition: background 0.3s ease-in-out;
             -moz-transition: background 0.3s ease-in-out;
             transition: background-color 0.3s ease-in-out;
         }
+
+        /* 帮助仅用 emoji 展示，尺寸与右侧按钮对齐 */
+        .help-emoji {
+            float: right;
+            margin-right: 8px;
+            margin-top: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 48px; /* 再放大，与按钮更匹配 */
+            width: 48px;  /* 扩大点击区域 */
+            font-size: 32px; /* 提升表情大小 */
+            cursor: pointer;
+            user-select: none;
+        }
+        .help-emoji:hover { transform: translateY(-1px); }
+
+        /* 帮助弹窗文字放大 */
+        .swal2-popup.help-popup { font-size: 16px; }
 
         #displayImg {
             width: 100px;
@@ -330,6 +383,8 @@
             margin: 0 auto;
 
         }
+        /* 未选择图片时隐藏预览，避免右上角显示失败图标 */
+        #image-display[src=""] { display: none; }
 
         .showbtn {
             width: 100%;
@@ -338,6 +393,7 @@
             margin: 0 0 5px;
             padding: 10px;
             font-size: 20px;
+            border-radius: 6px; /* 仅美化按钮圆角 */
 
         }
 
@@ -441,8 +497,8 @@
             <div id="contact">
 
                 <input class="ipt" type="text" id="mkdir" placeholder="URL">
-                <button type="button" id="delete" onclick="remove();">Delete</button>
-                <button type="button" id="update" onclick="uploadurl();">UploadUrl</button>
+                <button class="button-modern" type="button" id="delete" onclick="remove();">Delete</button>
+                <button class="button-modern" type="button" id="update" onclick="uploadurl();">UploadUrl</button>
                 <!-- <h4 class="glyphicon glyphicon-floppy-disk" >点击按钮选择文件</h4> -->
                 <input type="file" class="file" name="file" id="file" />
                 <!-- <button type="button" class="but1" onclick="upload();">upload</button> -->
@@ -454,7 +510,7 @@
         <div class="databoard">
             <div class="head">
                 <h2 class="title" id="head">当前目录文件</h2>
-                <button class="showbtn" type="button" id="back" onclick="list();">ShowList</button>
+                <button class="showbtn button-modern" type="button" id="back" onclick="list();">ShowList</button>
             </div>
             <div class="ct">
                 <div id="div"></div>
@@ -465,9 +521,10 @@
         <div class="showdata">
             <div class="bg">
                 <div>
-                    <button class="showbtnr" type="button" id="link"
+                    <button class="showbtnr button-modern" type="button" id="link"
                         onclick="window.open(imageUrl, '_blank');">OPEN=></button>
-                    <button class="showbtnl" type="button" id="copyurl" onclick="copyCurrentUrl();">CopyUrl</button>
+                    <button class="showbtnl button-modern" type="button" id="copyurl" onclick="copyCurrentUrl();">CopyUrl</button>
+                    <span class="help-emoji" id="help" onclick="showHelp();">❓</span>
                 </div>
                 <img id="image-display" class="placeimg" src="" alt="预览图片" />
                 <div id="file-info-panel" style="display: none;">
@@ -599,6 +656,8 @@
             }
         });
     }
+    // 确保全局可用，避免偶发未定义错误
+    window.list = list;
     function throttle(func, wait) {
         let timeout = null;
         let firstTime = true
@@ -674,6 +733,35 @@
             return;
         }
         setClipboard(imageUrl);
+    }
+    function showHelp() {
+        const html = `
+            <div style="text-align:left;line-height:1.6;">
+                <p><strong>项目简介：</strong>本页面提供七牛云图床的在线管理与预览功能。</p>
+                <p><strong>基本用法：</strong></p>
+                <ul style="padding-left:18px;">
+                    <li>首次访问如需密码，按提示输入完成登录。</li>
+                    <li>点击 <code>ShowList</code> 展开/收起当前目录文件列表。</li>
+                    <li>点击文件名可在右侧预览，并在页面背景中显示该图片。</li>
+                    <li>右上角 <code>OPEN</code> 在新窗口打开当前预览图片链接。</li>
+                    <li><code>CopyUrl</code> 复制当前预览图片的完整 URL 到剪贴板。</li>
+                    <li>左侧支持上传：点击、拖拽文件到“点击,拖入或粘贴上传文件”区域，或直接粘贴图片上传。</li>
+                    <li><code>UploadUrl</code> 支持按输入框中的 URL 拉取并上传到云端。</li>
+                    <li><code>Delete</code> 删除输入框指定文件名（请先选中或填入正确文件名）。</li>
+                </ul>
+                <p><strong>项目地址：</strong>
+                    <a href="https://github.com/chenxuan520/qiniuserver" target="_blank" rel="noopener noreferrer">github.com/chenxuan520/qiniuserver</a>
+                </p>
+                <p><strong>提示：</strong>如果复制失败或出现请求错误，会有弹窗提示。</p>
+            </div>
+        `;
+        Swal.fire({
+            title: '使用帮助',
+            html,
+            width: 640,
+            customClass: { popup: 'help-popup' },
+            confirmButtonText: '知道了'
+        });
     }
 </script>
 <script>
