@@ -305,6 +305,24 @@
             transition: background-color 0.3s ease-in-out;
         }
 
+        .showbtnl {
+            width: 25%;
+            float: right;
+            margin-right: 10px;
+            background: #99ff33;
+            color: #000;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        .showbtnl:hover {
+            background: lightblue;
+            -webkit-transition: background 0.3s ease-in-out;
+            -moz-transition: background 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in-out;
+        }
+
         #displayImg {
             width: 100px;
             height: auto;
@@ -449,6 +467,7 @@
                 <div>
                     <button class="showbtnr" type="button" id="link"
                         onclick="window.open(imageUrl, '_blank');">OPEN=></button>
+                    <button class="showbtnl" type="button" id="copyurl" onclick="copyCurrentUrl();">CopyUrl</button>
                 </div>
                 <img id="image-display" class="placeimg" src="" alt="预览图片" />
                 <div id="file-info-panel" style="display: none;">
@@ -648,6 +667,13 @@
         }, 300);
 
         throttleSetBackgroundImage();
+    }
+    function copyCurrentUrl() {
+        if (!imageUrl) {
+            warningMsg('未选择图片', '请先在列表中选择图片后再复制链接');
+            return;
+        }
+        setClipboard(imageUrl);
     }
 </script>
 <script>
