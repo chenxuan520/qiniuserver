@@ -864,6 +864,9 @@
             // 到这里表示返回200一定成功
             var data = JSON.parse(JSON.stringify(response.data))['data']['url'];
             uploadResultDeal(data);
+            // 刷新列表
+            list();
+            list();
         }).catch(error => {
             if (error.response.status === 400) {
                 console.log('发生了400错误：', error.response.data);
@@ -885,8 +888,10 @@
         const uploadUrl = "/api/upload";// 如果测试是 /api/upload_test
         axios.post(uploadUrl, formData, config).then(function (response) {
             var data = JSON.parse(JSON.stringify(response.data))['data']['url'];
-            alert(data);
             uploadResultDeal(data);
+            // 刷新列表
+            list();
+            list();
         }).catch(function (error) {
             if (error.response.status === 400) {
                 console.log('发生了400错误：', error.response.data);
