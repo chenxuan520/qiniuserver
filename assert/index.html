@@ -11,6 +11,22 @@
     <meta name="generator">
     <title>七牛云在线图床</title>
     <style>
+        :root {
+            --btn-radius: 12px;
+            --btn-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            --btn-shadow-hover: 0 14px 26px rgba(0, 0, 0, 0.22);
+            --btn-focus-ring: 0 0 0 3px rgba(116, 192, 252, 0.35);
+            --btn-text: rgba(0, 0, 0, 0.86);
+            --btn-text-invert: rgba(255, 255, 255, 0.92);
+
+            /* 统一按钮色板（仅用于本页面按钮） */
+            --c-danger: #ef4444;
+            --c-primary: #6366f1;
+            --c-info: #0ea5e9;
+            --c-success: #22c55e;
+            --c-neutral: #64748b;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -129,7 +145,7 @@
             cursor: pointer;
             width: 100%;
             border: none;
-            background: #ffb3b3;
+            background: #f1f5f9;
             color: #000;
             margin: 0 0 5px;
             padding: 10px;
@@ -154,7 +170,7 @@
             width: 100%;
             height: 80px;
             border: none;
-            background: #ff6666;
+            background: var(--c-danger);
             color: #000;
             margin: 0 0 5px;
             padding: 10px;
@@ -191,7 +207,7 @@
             cursor: pointer;
             width: 100%;
             border: none;
-            background: #00FF80;
+            background: var(--c-neutral);
             color: #000;
             margin: 0 0 5px;
             padding: 10px;
@@ -203,7 +219,7 @@
             cursor: pointer;
             width: 100%;
             border: none;
-            background: #58FAF4;
+            background: var(--c-info);
             color: #000;
             margin: 0 0 5px;
             padding: 10px;
@@ -215,7 +231,7 @@
             cursor: pointer;
             width: 100%;
             border: none;
-            background: #74c0fc;
+            background: var(--c-success);
             color: #fff;
             margin: 0 0 8px;
             padding: 12px;
@@ -246,32 +262,45 @@
 
         /* 保持原始列表项样式，不额外添加间距或宽度规则 */
 
-        #contact button[type="button"]:hover {
+        #contact button[type="button"]:hover:not(.button-modern) {
             background: #09C;
             -webkit-transition: background 0.3s ease-in-out;
             -moz-transition: background 0.3s ease-in-out;
             transition: background-color 0.3s ease-in-out;
         }
 
-        /* 现代化按钮增强，仅视觉优化，不改变原有尺寸与配色 */
+        /* 现代化按钮增强（仅视觉优化，不改变原有尺寸与配色/布局） */
         .button-modern {
-            border-radius: 10px; /* 更圆润 */
-            border: 1px solid rgba(0,0,0,0.08);
-            background-image: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
-            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+            border-radius: var(--btn-radius);
+            border: 1px solid rgba(0, 0, 0, 0.10);
+            color: var(--btn-text);
+            background-clip: padding-box;
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04));
+            box-shadow: var(--btn-shadow);
+            transform: translateZ(0);
+            transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease, background-color 0.18s ease;
         }
         .button-modern:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 18px rgba(0,0,0,0.16);
+            box-shadow: var(--btn-shadow-hover);
+            filter: brightness(1.02);
         }
         .button-modern:active {
             transform: translateY(0);
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.22);
+            filter: brightness(0.98);
         }
-        .button-modern:focus {
+        .button-modern:focus,
+        .button-modern:focus-visible {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(0,153,204,0.25), 0 6px 14px rgba(0,0,0,0.12);
+            box-shadow: var(--btn-focus-ring), var(--btn-shadow);
+        }
+        /* 深色按钮统一用浅色文字，提升对比度（仅针对已存在的深色按钮） */
+        #contact button#link.button-modern,
+        #contact button#copyurl.button-modern,
+        #contact button#delete.button-modern,
+        .showbtnl.button-modern {
+            color: var(--btn-text-invert);
         }
 
         #drop-area {
@@ -287,7 +316,7 @@
             font-size: 40px;
         }
 
-        #contact button[type="button"]:active {
+        #contact button[type="button"]:active:not(.button-modern) {
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
@@ -323,7 +352,7 @@
             width: 25%;
             float: right;
             margin-right: 10px;
-            background: #00FF80;
+            background: var(--c-success);
             color: #000;
             margin-top: 10px;
             padding: 10px;
@@ -331,8 +360,8 @@
             border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
-        .showbtnr:hover {
-            background: lightblue;
+        .showbtnr:hover:not(.button-modern) {
+            background: #16a34a;
             -webkit-transition: background 0.3s ease-in-out;
             -moz-transition: background 0.3s ease-in-out;
             transition: background-color 0.3s ease-in-out;
@@ -342,7 +371,7 @@
             width: 25%;
             float: right;
             margin-right: 10px;
-            background: #339af0; /* 与 OPEN 区分的蓝色 */
+            background: var(--c-info); /* 与 OPEN 区分的蓝色 */
             color: #fff;
             margin-top: 10px;
             padding: 10px;
@@ -350,8 +379,8 @@
             border-radius: 6px; /* 仅美化按钮圆角 */
         }
 
-        .showbtnl:hover {
-            background: #1e7af5;
+        .showbtnl:hover:not(.button-modern) {
+            background: #0284c7;
             -webkit-transition: background 0.3s ease-in-out;
             -moz-transition: background 0.3s ease-in-out;
             transition: background-color 0.3s ease-in-out;
@@ -388,7 +417,7 @@
 
         .showbtn {
             width: 100%;
-            background: #ffb3b3;
+            background: #f8fafc;
             color: #000;
             margin: 0 0 5px;
             padding: 10px;
@@ -397,8 +426,8 @@
 
         }
 
-        .showbtn:hover {
-            background: lightblue;
+        .showbtn:hover:not(.button-modern) {
+            background: #e2e8f0;
             -webkit-transition: background 0.3s ease-in-out;
             -moz-transition: background 0.3s ease-in-out;
             transition: background-color 0.3s ease-in-out;
