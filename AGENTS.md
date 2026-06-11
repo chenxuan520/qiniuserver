@@ -21,8 +21,8 @@
 - `src/main.go`：入口；组装配置、七牛初始化、路由、静态资源托管。
 - `src/config/config.go`：读取 JSON 配置，写入 `config.GlobalConfig`。
 - `src/middlerware/auth.go`：API 密码校验（读取 `Authorization` 请求头）。
-- `src/controller/file.go`：HTTP handler（上传、URL 上传、列表、删除、info）。
-- `src/utils/qiniu.go`：七牛 SDK 封装（init/upload/list/delete）。
+- `src/controller/file.go`：HTTP handler（上传、URL 上传、列表分页、删除、info）。
+- `src/utils/qiniu.go`：七牛 SDK 封装（init/upload/list/list-page/delete）。
 - `src/controller/response/res.go`：统一响应结构封装。
 
 ### 典型请求链路（上传文件）
@@ -129,3 +129,35 @@
   - `%d`：时间戳（格式 `20060112150405`）
   - `%f`：原始文件名（空格会替换为 `_`）
   - `%r`：6 位随机字符串
+
+## 7) API 接口
+
+### `POST /api/list` — 文件列表（分页）
+
+请求体：
+```json
+{ "path": "upload_path", "marker": "", "limit": 50 }
+```
+
+- `marker`：翻页游标，首次为空，后续取上一次响应的 `next_marker`。
+- `limit`：每页数量，1~1000，默认 50。
+
+响应体：
+```json
+{ "code": 200, "data": { "list": [...], "next_marker": "xxx", "has_next": true } }
+```
+
+- `has_next` 为 `false` 时表示无更多数据。
+
+### 其他接口
+
+- `GET /api/info`：返回 `{ "path": "...", "domain": "..." }`。
+- `POST /api/upload`：multipart 上传文件。
+- `POST /api/upload_url`：按 URL 拉取并上传。
+- `POST /api/delete`：删除文件，请求体 `{ "path": "full_key" }`。
+
+## 8) 前端
+
+- 单页应用，`assert/index.html`，依赖本地 `assert/axios.min.js` 和 `assert/sweetalert2.all.min.js`，无外部 CDN 依赖（国内可用）。
+- 深色主题，三栏布局（上传 / 文件列表 / 预览），双击图片可全屏灯箱预览。
+- 文件列表支持分页加载（「加载更多」按钮）。

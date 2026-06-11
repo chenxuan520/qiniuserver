@@ -120,6 +120,50 @@ func GetDirList(dir string) ([]storage.ListItem, error) {
 	return result, nil
 }
 
+type ListPageResult struct {
+	Items      []storage.ListItem `json:"items"`
+	NextMarker string             `json:"next_marker"`
+	HasNext    bool               `json:"has_next"`
+}
+
+func GetDirListPage(dir, marker string, limit int) (*ListPageResult, error) {
+	if limit <= 0 || limit > 1000 {
+		limit = 50
+	}
+	prefix := dir
+	if len(dir) > 0 {
+		prefix = dir + "/"
+	}
+
+	entries, _, nextMarker, hasNext, err := manager.ListFiles(bucket, prefix, "", marker, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	sort.Slice(entries, func(i, j int) bool {
+		return entries[i].PutTime > entries[j].PutTime
+	})
+
+	var result []storage.ListItem
+	for i := range entries {
+		if len(entries[i].Key) <= len(prefix) {
+			continue
+		}
+		entries[i].Key = entries[i].Key[len(prefix):]
+		result = append(result, entries[i])
+	}
+
+	if result == nil {
+		result = make([]storage.ListItem, 0)
+	}
+
+	return &ListPageResult{
+		Items:      result,
+		NextMarker: nextMarker,
+		HasNext:    hasNext,
+	}, nil
+}
+
 func DeleteFile(path string) error {
 	return manager.Delete(bucket, path)
 }

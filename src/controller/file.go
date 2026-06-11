@@ -12,7 +12,9 @@ import (
 )
 
 type ReqPath struct {
-	Path string `json:"path"`
+	Path   string `json:"path"`
+	Marker string `json:"marker"`
+	Limit  int    `json:"limit"`
 }
 
 func UploadTest(g *gin.Context) {
@@ -121,25 +123,27 @@ func UploadFile(g *gin.Context) {
 }
 
 func GetFileList(g *gin.Context) {
-	path := &ReqPath{}
-	err := g.Bind(path)
+	req := &ReqPath{}
+	err := g.Bind(req)
 	if err != nil {
 		res.Error(g, http.StatusBadRequest, err.Error())
 		return
 	}
-	if path.Path == "" {
+	if req.Path == "" {
 		res.Error(g, http.StatusBadRequest, "cannot get dir")
 		return
 	}
 
-	list, err := utils.GetDirList(path.Path)
+	result, err := utils.GetDirListPage(req.Path, req.Marker, req.Limit)
 	if err != nil {
 		res.Error(g, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	res.Success(g, map[string]interface{}{
-		"list": list,
+		"list":        result.Items,
+		"next_marker": result.NextMarker,
+		"has_next":    result.HasNext,
 	})
 }
 
