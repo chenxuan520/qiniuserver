@@ -8,6 +8,8 @@
 
 未发现 Cursor/Copilot/Trae 的规则文件（未找到 `.cursor/rules/`、`.github/copilot-instructions.md`、`.trae/rules/`）。
 
+**Agent skill**：调用本项目 HTTP API（上传/列表/删除/鉴权/分页）前，先读 `.agents/skills/qiniuserver/SKILL.md`；首页 `assert/index.html` 内也有一段隐藏的 `#agent-guide` 精简契约。
+
 ## 1) 项目概览
 
 ### 运行形态

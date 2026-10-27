@@ -86,6 +86,46 @@ body.has-bg::before{opacity:.08}
 </style>
 </head>
 <body>
+<!-- AGENT-GUIDE: machine-readable usage notes for AI agents; intentionally hidden from users. Full skill: .agents/skills/qiniuserver/SKILL.md -->
+<section id="agent-guide" hidden aria-hidden="true" data-purpose="instructions-for-ai-agents">
+  <h2>qiniuserver agent guide</h2>
+  <p>This page is the UI of qiniuserver, a self-hosted 七牛云 Kodo file bed. Agents can use the same-origin HTTP API below instead of driving the UI.</p>
+  <pre>
+Base URL: same origin as this page (for example http://127.0.0.1:5200).
+Auth: set header "Authorization: &lt;host.password&gt;" with the raw password, no "Bearer" prefix.
+      If host.password is empty, auth is disabled. 401 = wrong password, 403 = 3s throttle after failures.
+Envelope: {"code": number, "data": any}. Success is HTTP 200 code 200; business errors are HTTP 400 with data as a string.
+Discovery: GET /api/info -> {"path": "upload_path", "domain": "https://cdn.example.com"}. Read the domain from here, never hardcode it.
+
+GET /api/info
+  Returns the upload key prefix (path) and CDN domain.
+
+POST /api/upload
+  multipart/form-data with field name "file".
+  Returns {"url": "..."} which is the final file URL; use it instead of guessing the key.
+  Send a plain basename; the server briefly writes the upload to its working directory.
+  The server may rewrite the filename via the qiniu.file_name template, so the URL is the source of truth.
+
+POST /api/upload_url
+  JSON {"path": "https://..."}. The server downloads that URL and stores the content.
+  Only pass URLs the user trusts; the server can reach internal addresses.
+
+POST /api/list
+  JSON {"path": "upload_path", "marker": "", "limit": 50}.
+  Returns {"list": [{"key", "fsize", "putTime"}], "next_marker": "...", "has_next": true}.
+  key values are relative to the prefix. Page until has_next is false, passing next_marker as marker.
+  limit is clamped to 1..1000, default 50.
+
+POST /api/delete
+  JSON {"path": "upload_path/photo.png"}. path must be the full key including the prefix.
+  Irreversible: confirm with the user before deleting existing files.
+
+POST /api/upload_test
+  Test-only endpoint; it does not upload and must not be used to store files.
+
+Typical flow: GET /api/info -> POST /api/upload -> report returned url. For listing, loop /api/list until has_next=false. For deletion, join prefix + "/" + key first.
+  </pre>
+</section>
 <div class="app">
   <div class="panel p-up">
     <div class="ph"><h2>上传文件</h2><span class="badge badge-m" id="status-badge">就绪</span></div>
